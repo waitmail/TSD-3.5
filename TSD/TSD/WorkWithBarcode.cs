@@ -41,11 +41,14 @@ namespace TSD
 
         private void WorkWithBarcode_Paint(object sender, PaintEventArgs e)
         {
+            Program.write_log("WorkWithBarcode_Paint1");
             label_powerstatus.Text = ps.ReportPowerStatus("main") + " | " + ps.ReportPowerStatus("");
+            Program.write_log("WorkWithBarcode_Paint2");
         }
 
         private void get_display_quantity()
         {
+            Program.write_log("get_display_quantity1");
              SQLiteConnection conn = Program.ConnectForDataBase();
              try
              {
@@ -79,11 +82,12 @@ namespace TSD
                      conn.Close();
                  }
              }
-
+             Program.write_log("get_display_quantity2");
         }
 
         private string get_quantity_1c()
         {
+            Program.write_log("get_quantity_1c1");
             string result = "";
 
 
@@ -148,12 +152,13 @@ namespace TSD
                     conn.Close();
                 }
             }
-
-            return result;
+            Program.write_log("get_quantity_1c2");
+            return result;            
         }
 
         private string get_quantity_shop()
         {
+            Program.write_log("get_quantity_shop1");
             string result = "";
                      
             SQLiteConnection conn = Program.ConnectForDataBase();
@@ -211,8 +216,8 @@ namespace TSD
                     conn.Close();
                 }
             }
-
-            return result;
+            Program.write_log("get_quantity_shop2");
+            return result;            
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -225,6 +230,7 @@ namespace TSD
     
         private void to_check_the_status_of_the_document()
         {
+            Program.write_log("to_check_the_status_of_the_document1");
             SQLiteConnection conn = Program.ConnectForDataBase();
             try
             {
@@ -258,11 +264,12 @@ namespace TSD
                     conn.Close();
                 }
             }
- 
+            Program.write_log("to_check_the_status_of_the_document2");
         }
 
         private void load_data_last_scaned()
         {
+            Program.write_log("load_data_last_scaned1");
             SQLiteConnection conn = Program.ConnectForDataBase();
             try
             {
@@ -297,11 +304,14 @@ namespace TSD
                 {
                     conn.Close();
                 }
-            } 
+            }
+            Program.write_log("load_data_last_scaned2");
         }
         
         private void WorkWithBarcode_Load(object sender, EventArgs e)
         {
+            Program.write_log("WorkWithBarcode_Load1");
+
             if (its_new == 1)
             {
                 num_box = "0";
@@ -323,11 +333,13 @@ namespace TSD
             {
                 label_количество_в_магазине.Text = " в коробке  " + get_quantity_shop();
                 label_количество_в_1с.Text = get_quantity_1c();
-            }               
+            }
+            Program.write_log("WorkWithBarcode_Load2");   
         }
         
         private void txtB_quantity_KeyPress(object sender, KeyPressEventArgs e)
         {
+            Program.write_log("txtB_quantity_KeyPress1");   
             if (tovar_code == "")
             {
                 //MessageBox.Show(" Товар не определен ");
@@ -357,10 +369,12 @@ namespace TSD
                     }
                 }
             }
+            Program.write_log("txtB_quantity_KeyPress2");   
         }
 
         private void tovar_not_found()
         {
+            Program.write_log("tovar_not_found1");   
             //if (this.its_new == 0)
             //{
                 panel_tovar_not_found.Visible = true;
@@ -374,11 +388,13 @@ namespace TSD
                 PlaySound ps = new PlaySound();
                 ps.PlaySound_WAV("\\Windows\\exclam.wav");
                 ps.PlaySound_WAV("\\Windows\\exclam.wav");
-            //}            
+            //}
+                Program.write_log("tovar_not_found2");   
         }
 
         private void txtB_input_barcode_KeyPress(object sender, KeyPressEventArgs e)
         {
+            Program.write_log("txtB_input_barcode_KeyPress1");   
 //            label_date_scaning.Text = "Сканировано "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
             if (e.KeyChar == 13)
             {
@@ -400,11 +416,12 @@ namespace TSD
                     e.Handled = true;
                 }
             }
-            
+            Program.write_log("txtB_input_barcode_KeyPress2");      
         }
         
         private bool check_positive_quantity(string quantity_shop)
         {
+            Program.write_log("check_positive_quantity1");   
             bool result = true;
 
             string quantity = get_quantity_shop();
@@ -424,7 +441,7 @@ namespace TSD
                     result = false;
                 }
             }
-
+            Program.write_log("check_positive_quantity2");   
             return result;
         }
 
@@ -434,6 +451,7 @@ namespace TSD
         /// </summary>
         private void write_record()
         {
+            Program.write_log("write_record1");   
 
             label_количество_в_магазине.Text = " в коробке  ";
             label_количество_в_1с.Text = "";
@@ -654,6 +672,7 @@ namespace TSD
             }
             GC.Collect();
             GC.WaitForPendingFinalizers();
+            Program.write_log("write_record2");   
         }
 
 
@@ -664,6 +683,7 @@ namespace TSD
         /// <returns></returns>
         private string get_new_line_number()
         {
+            Program.write_log("get_new_line_number1");   
             string result = "1";
 
             SQLiteConnection conn = Program.ConnectForDataBase();
@@ -688,7 +708,7 @@ namespace TSD
                     conn.Close();
                 }
             }
-            
+            Program.write_log("get_new_line_number2");               
             return result;
         }
 
@@ -696,6 +716,7 @@ namespace TSD
         {
 
         //    SQLiteConnection conn = Program.ConnectForDataBase();
+            Program.write_log("update_distribute_quantity1");   
 
             try
             {
@@ -738,7 +759,8 @@ namespace TSD
                 //{
                 //    Close();
                 //}
-            }           
+            }
+            Program.write_log("update_distribute_quantity2");   
         }
 
 
@@ -752,6 +774,7 @@ namespace TSD
         /// <param name="quantity"></param>
         private void distribute_positve_quantity(int quantity, SQLiteConnection conn)
         {
+            Program.write_log("distribute_positve_quantity1");   
            // SQLiteConnection conn = Program.ConnectForDataBase();            
             try
             {
@@ -862,7 +885,7 @@ namespace TSD
                 //    Close();
                 //}
             }
-
+            Program.write_log("distribute_positve_quantity2");   
         }
 
         /// <summary>
@@ -874,6 +897,7 @@ namespace TSD
         /// <param name="quantity"></param>
         private void distribute_negative_quantity(int quantity, SQLiteConnection conn)
         {
+            Program.write_log("distribute_negative_quantity1");   
             quantity = quantity * -1;
             //SQLiteConnection conn = Program.ConnectForDataBase();
             try
@@ -959,7 +983,7 @@ namespace TSD
 
                 //    //update_distribute_quantity(tovar_code, quantity + quantity_local_distribute + quantity_shop_local, last_line_number);
                 //}
-
+                
             }
             catch (SQLiteException ex)
             {
@@ -976,10 +1000,12 @@ namespace TSD
                 //    Close();
                 //}
             }
+            Program.write_log("distribute_negative_quantity2");   
         }
 
         public void find_barcode_or_code_in_tovar(string barcode)
         {
+            Program.write_log("find_barcode_or_code_in_tovar1");   
 
             label_количество_в_магазине.Text = " в коробке  ";
             label_количество_в_1с.Text = "";
@@ -1203,15 +1229,19 @@ namespace TSD
 
                 }
             }
+            Program.write_log("find_barcode_or_code_in_tovar2");   
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
+            Program.write_log("btn_cancel_Click1");   
             this.Close();
+            Program.write_log("btn_cancel_Click2");   
         }
         
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            Program.write_log("OnKeyDown1");   
            // base.OnKeyDown(e);
             if (e.KeyCode == Keys.Z)
             {
@@ -1241,11 +1271,13 @@ namespace TSD
             {
                 txtB_quantity.Text = (Convert.ToInt64(get_quantity_1c()) - Convert.ToInt64(get_quantity_shop())).ToString();
             }
+            Program.write_log("OnKeyDown2");   
         }        
 
 
         private void btn_complete_Click(object sender, EventArgs e)
         {
+            Program.write_log("btn_complete_Click1");   
             SQLiteConnection conn = Program.ConnectForDataBase();
 
             try
@@ -1273,6 +1305,7 @@ namespace TSD
                     conn.Close();
                 }
             }
+            Program.write_log("btn_complete_Click2");   
         }
     }
 }

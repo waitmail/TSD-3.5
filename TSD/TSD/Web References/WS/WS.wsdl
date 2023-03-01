@@ -60,6 +60,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="Upload_logs">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="guid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="num_base" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upload_logsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Upload_logsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="Get_Document_1c_Box">
         <s:complexType>
           <s:sequence>
@@ -199,6 +215,12 @@
   <wsdl:message name="Get_Document_1cSoapOut">
     <wsdl:part name="parameters" element="tns:Get_Document_1cResponse" />
   </wsdl:message>
+  <wsdl:message name="Upload_logsSoapIn">
+    <wsdl:part name="parameters" element="tns:Upload_logs" />
+  </wsdl:message>
+  <wsdl:message name="Upload_logsSoapOut">
+    <wsdl:part name="parameters" element="tns:Upload_logsResponse" />
+  </wsdl:message>
   <wsdl:message name="Get_Document_1c_BoxSoapIn">
     <wsdl:part name="parameters" element="tns:Get_Document_1c_Box" />
   </wsdl:message>
@@ -257,6 +279,10 @@
     <wsdl:operation name="Get_Document_1c">
       <wsdl:input message="tns:Get_Document_1cSoapIn" />
       <wsdl:output message="tns:Get_Document_1cSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Upload_logs">
+      <wsdl:input message="tns:Upload_logsSoapIn" />
+      <wsdl:output message="tns:Upload_logsSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Get_Document_1c_Box">
       <wsdl:input message="tns:Get_Document_1c_BoxSoapIn" />
@@ -318,6 +344,15 @@
     </wsdl:operation>
     <wsdl:operation name="Get_Document_1c">
       <soap:operation soapAction="http://tempuri.org/Get_Document_1c" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upload_logs">
+      <soap:operation soapAction="http://tempuri.org/Upload_logs" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -420,6 +455,15 @@
     </wsdl:operation>
     <wsdl:operation name="Get_Document_1c">
       <soap12:operation soapAction="http://tempuri.org/Get_Document_1c" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upload_logs">
+      <soap12:operation soapAction="http://tempuri.org/Upload_logs" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

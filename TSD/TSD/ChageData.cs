@@ -2198,25 +2198,25 @@ namespace TSD
                
         #region load_out_files
 
-        private void btn_load_out_files_Click(object sender, EventArgs e)
-        {
+        //private void btn_load_out_files_Click(object sender, EventArgs e)
+        //{
 
-            if (File.Exists("\\Storage Card\\tovar.txt"))//Есть файл товаров, попробовать его загрузить
-            {
-                load_tovar_out_file();
-            }
+        //    if (File.Exists("\\Storage Card\\tovar.txt"))//Есть файл товаров, попробовать его загрузить
+        //    {
+        //        load_tovar_out_file();
+        //    }
 
-            if (File.Exists("\\Storage Card\\barcode.txt"))//Есть файл штрихкодов, попробовать его загрузить
-            {
-                load_barcodes_out_file();
-            }
+        //    if (File.Exists("\\Storage Card\\barcode.txt"))//Есть файл штрихкодов, попробовать его загрузить
+        //    {
+        //        load_barcodes_out_file();
+        //    }
 
-            if (File.Exists("\\Storage Card\\DH.txt") && File.Exists("\\Storage Card\\DT.txt"))//Есть файлы документов, попробовать их загрузить
-            {
-                load_documents_out_file();
-            }
+        //    if (File.Exists("\\Storage Card\\DH.txt") && File.Exists("\\Storage Card\\DT.txt"))//Есть файлы документов, попробовать их загрузить
+        //    {
+        //        load_documents_out_file();
+        //    }
 
-        }
+        //}
 
         private void load_tovar_out_file()
         {
@@ -2405,7 +2405,78 @@ namespace TSD
 
         #endregion
 
-       
-       
+        private void btn_upload_logs_Click(object sender, EventArgs e)
+        {
+
+     
+            WS.WS ds = new TSD.WS.WS();
+            ds.Timeout = 200 * 1000;            
+            string device_id = Program.get_device_id();
+            
+            int num_base = Program.GetDbId();                            
+            
+            SQLiteConnection conn = Program.ConnectForDataBase();
+            SQLiteCommand command = null;
+            //SQLiteTransaction trans = null;
+            StringBuilder sb = new StringBuilder();
+            string query = "";
+            string nick_shop=Program.get_code_shop();
+
+
+            //query = "DELETE FROM logs ;";
+            //conn.Open();
+            //command = new SQLiteCommand(query, conn);
+            //command.ExecuteNonQuery();
+            //return;
+            
+            try
+            {
+                conn.Open();
+                //trans = conn.BeginTransaction();
+
+                query = "SELECT date,description FROM logs ;";
+                command = new SQLiteCommand(query, conn);
+                SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string s = "";
+                    s = "'" + nick_shop + "','" + device_id + "','" + reader.GetDateTime(0).ToString("dd-MM-yyyy HH:mm:ss") + "','" + reader["description"].ToString() + "'|";
+                    sb.Append(s); 
+                }
+
+                
+                               
+                string key = device_id + CryptorEngine.get_count_day_tsd();
+                string encrypt_data = CryptorEngine.Encrypt(device_id + sb.ToString() + device_id, true, key);
+                //System.IO.StreamWriter sw = new StreamWriter("\\Application\\query.txt",true);
+                //sw.WriteLine(encrypt_data);
+                //sw.Close();
+
+                string result_upload = ds.Upload_logs(device_id, encrypt_data, num_base);
+                if (result_upload == "1")
+                {
+                    query = "DELETE FROM logs ;";
+                    command = new SQLiteCommand(query, conn);
+                    command.ExecuteNonQuery();
+                    textBox1.Text += "Результаты логгирования успешно переданы";
+                }
+                conn.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }             
     }
 }

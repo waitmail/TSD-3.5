@@ -383,6 +383,36 @@ namespace TSD
         }
 
 
+        public static void write_log(string log_message)
+        {
+            SQLiteConnection conn = Program.ConnectForDataBase();
+            try
+            {
+                conn.Open();
+                string query = " INSERT INTO logs(date,description)VALUES('"+
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + log_message + "')";                    
+                SQLiteCommand command = new SQLiteCommand(query, conn);
+                command.ExecuteNonQuery();                
+                conn.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                MessageBox.Show(" Ошибка при логировании " + ex.Message);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибка при логировании " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            } 
+        }
+
         public static string get_code_shop()
         {
             string result = "";
@@ -611,6 +641,7 @@ namespace TSD
             //MessageBox.Show((DateTime.Now-start).TotalSeconds.ToString());
         }
 
+
         public static bool CreateDataBase()
         {
             try
@@ -757,7 +788,13 @@ namespace TSD
                 cmd.CommandText = "CREATE INDEX Ind_dt_box ON dt(guid,box)";
                 cmd.Transaction = myTrans;
                 cmd.ExecuteNonQuery();
-                             
+
+                //добавляем логирование чтобы найти зависание 
+                cmd.CommandText = " CREATE TABLE logs(" +
+                    " date datetime NOT NULL," +
+                    " description nvarchar(300) NOT NULL)";
+                cmd.Transaction = myTrans;
+                cmd.ExecuteNonQuery();
 
                 myTrans.Commit();
                 conn.Close();

@@ -32,7 +32,7 @@
             this.btn_load_documents_1c = new System.Windows.Forms.Button();
             this.btn_execute_full_sinhronization = new System.Windows.Forms.Button();
             this.label_powerstatus = new System.Windows.Forms.Label();
-            this.btn_load_out_files = new System.Windows.Forms.Button();
+            this.btn_upload_logs = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
@@ -69,15 +69,14 @@
             this.label_powerstatus.Name = "label_powerstatus";
             this.label_powerstatus.Size = new System.Drawing.Size(56, 30);
             // 
-            // btn_load_out_files
+            // btn_upload_logs
             // 
-            this.btn_load_out_files.Location = new System.Drawing.Point(2, 252);
-            this.btn_load_out_files.Name = "btn_load_out_files";
-            this.btn_load_out_files.Size = new System.Drawing.Size(75, 40);
-            this.btn_load_out_files.TabIndex = 9;
-            this.btn_load_out_files.Text = "Из файлов";
-            this.btn_load_out_files.Visible = false;
-            this.btn_load_out_files.Click += new System.EventHandler(this.btn_load_out_files_Click);
+            this.btn_upload_logs.Location = new System.Drawing.Point(2, 252);
+            this.btn_upload_logs.Name = "btn_upload_logs";
+            this.btn_upload_logs.Size = new System.Drawing.Size(75, 40);
+            this.btn_upload_logs.TabIndex = 9;
+            this.btn_upload_logs.Text = "Логи";
+            this.btn_upload_logs.Click += new System.EventHandler(this.btn_upload_logs_Click);
             // 
             // ChageData
             // 
@@ -86,7 +85,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
-            this.Controls.Add(this.btn_load_out_files);
+            this.Controls.Add(this.btn_upload_logs);
             this.Controls.Add(this.label_powerstatus);
             this.Controls.Add(this.btn_execute_full_sinhronization);
             this.Controls.Add(this.btn_load_documents_1c);
@@ -104,6 +103,6 @@
         private System.Windows.Forms.Button btn_load_documents_1c;
         private System.Windows.Forms.Button btn_execute_full_sinhronization;
         private System.Windows.Forms.Label label_powerstatus;
-        private System.Windows.Forms.Button btn_load_out_files;
+        private System.Windows.Forms.Button btn_upload_logs;
     }
 }
