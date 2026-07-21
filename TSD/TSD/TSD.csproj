@@ -93,6 +93,12 @@
     <Compile Include="DocumentList.Designer.cs">
       <DependentUpon>DocumentList.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnterExpirationDate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EnterExpirationDate.Designer.cs">
+      <DependentUpon>EnterExpirationDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="InputCommentNewDocument.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +136,9 @@
     <EmbeddedResource Include="DocumentList.resx">
       <DependentUpon>DocumentList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EnterExpirationDate.resx">
+      <DependentUpon>EnterExpirationDate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="JoutnalInventory.resx">
       <DependentUpon>JoutnalInventory.cs</DependentUpon>
     </EmbeddedResource>
@@ -149,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Setting.resx">
       <DependentUpon>Setting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkWithBarcode.resx">
+      <DependentUpon>WorkWithBarcode.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -194,10 +206,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://ch.sd2.com.ua/WS/WS.asmx">
+    <WebReferenceUrl Include="http://ch.sd2.com.ru/WS/WS.asmx">
       <UrlBehavior>Static</UrlBehavior>
       <RelPath>Web References\WS\</RelPath>
-      <UpdateFromURL>http://ch.sd2.com.ua/WS/WS.asmx</UpdateFromURL>
+      <UpdateFromURL>http://ch.sd2.com.ru/WS/WS.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

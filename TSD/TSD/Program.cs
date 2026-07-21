@@ -24,8 +24,14 @@ namespace TSD
             if (!BaseExist)
             {
                 Program.CreateDataBase();
+                Program.write_setting(1);
             }
             //BackupDatabases();
+            AddColumnDateExpiration();
+            if (File.Exists(Program.get_startup_folder_path() + "old_TSD.exe"))
+            {
+                File.Delete(Program.get_startup_folder_path() + "old_TSD.exe");
+            }
             Application.Run(new MainForm());
         }
 
@@ -382,36 +388,140 @@ namespace TSD
             }
         }
 
+        //public static string UploadLogs()
+        //{
 
-        public static void write_log(string log_message)
-        {
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            try
-            {
-                conn.Open();
-                string query = " INSERT INTO logs(date,description)VALUES('"+
-                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + log_message + "')";                    
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                command.ExecuteNonQuery();                
-                conn.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(" Ошибка при логировании " + ex.Message);
+        //    //textBox1.Text = "Попытка передачи логов";
+        //    string result_upload = "-1";
+        //    WS.WS ds = new TSD.WS.WS();
+        //    ds.Timeout = 200 * 1000;
+        //    string device_id = Program.get_device_id();
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибка при логировании " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            } 
-        }
+        //    int num_base = Program.GetDbId();
+
+        //    //SQLiteConnection conn = Program.ConnectForDataBase();
+        //    //SQLiteCommand command = null;
+        //    //SQLiteTransaction trans = null;
+        //    StringBuilder sb = new StringBuilder();
+        //    //string query = "";
+        //    string nick_shop = Program.get_code_shop();
+                     
+
+        //    try
+        //    {
+        //        //conn.Open();              
+
+        //        using (StreamReader sr = new StreamReader("\\Application\\Logs.txt"))
+        //        {
+        //            string line;
+        //            while ((line = sr.ReadLine()) != null)
+        //            {
+
+        //                char[] delimiters = new char[] { ',' };
+        //                string[] t = line.Split(delimiters);
+        //                string s = "";
+        //                s = "'" + nick_shop + "','" + device_id + "','" + t[0] + "','" + t[1] + "'|";
+        //                sb.Append(s);
+        //            }
+        //        }
+
+
+        //        string key = device_id + CryptorEngine.get_count_day_tsd();
+        //        string encrypt_data = CryptorEngine.Encrypt(device_id + sb.ToString() + device_id, true, key);
+        //        //System.IO.StreamWriter sw = new StreamWriter("\\Application\\query.txt",true);
+        //        //sw.WriteLine(encrypt_data);
+        //        //sw.Close();
+
+        //        result_upload = ds.Upload_logs(device_id, encrypt_data, num_base);
+        //        if (result_upload == "1")
+        //        {
+        //            File.Delete("\\Application\\Logs.txt");
+        //        }                  
+        //    }
+        //    catch (SQLiteException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }            
+        //    return result_upload;
+        //}             
+
+
+        //public static void write_log(string log_message)
+        //{
+        //    using (StreamWriter sw = new StreamWriter("\\Application\\Logs.txt",true))
+        //    {
+        //        sw.WriteLine(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") + "," + log_message);                
+        //    }
+        //    GC.Collect();
+        //    GC.WaitForPendingFinalizers();
+            
+            //SQLiteConnection conn = Program.ConnectForDataBase();
+            //try
+            //{
+            //    conn.Open();
+            //    string query = " INSERT INTO logs(date,description)VALUES('"+
+            //                   DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + log_message + "')";                    
+            //    SQLiteCommand command = new SQLiteCommand(query, conn);
+            //    command.ExecuteNonQuery();                
+            //    conn.Close();
+            //}
+            //catch (SQLiteException ex)
+            //{
+            //    MessageBox.Show(" Ошибка при логировании " + ex.Message);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(" Ошибка при логировании " + ex.Message);
+            //}
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();                    
+            //    }
+            //}
+            //conn.Dispose();
+        //}
+
+        //public static void write_log(string log_message, SQLiteConnection conn)
+        //{
+        //    using (StreamWriter sw = new StreamWriter("\\Application\\Logs.txt",true))
+        //    {
+        //        sw.WriteLine(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") + "," + log_message);
+        //    }
+        //    //SQLiteConnection conn = Program.ConnectForDataBase();
+        //    //try
+        //    //{
+        //    //    //conn.Open();
+        //    //    string query = " INSERT INTO logs(date,description)VALUES('" +
+        //    //                   DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + log_message + "')";
+        //    //    SQLiteCommand command = new SQLiteCommand(query, conn);
+        //    //    command.ExecuteNonQuery();
+        //    //    //conn.Close();
+        //    //}
+        //    //catch (SQLiteException ex)
+        //    //{
+        //    //    MessageBox.Show(" Ошибка при логировании " + ex.Message);
+
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    MessageBox.Show(" Ошибка при логировании " + ex.Message);
+        //    //}
+        //    //finally
+        //    //{
+        //    //    if (conn.State == ConnectionState.Open)
+        //    //    {
+        //    //        //conn.Close();
+        //    //    }
+        //    //}
+        //    //conn.Dispose();
+        //}
 
         public static string get_code_shop()
         {
@@ -542,7 +652,7 @@ namespace TSD
 
         public static void BackupDatabases()
         {
-            //return;
+            return;
             if (!Directory.Exists("\\Application\\BackUp"))
             {
                 Directory.CreateDirectory("\\Application\\BackUp");
@@ -593,52 +703,194 @@ namespace TSD
             //{
             //    File.Move(file_destination, file_destination_temp);
             //}
-            SQLiteConnection conn_source = new SQLiteConnection(Program.ConectionString);
-            SQLiteConnection conn_destination = new SQLiteConnection("Data Source =" + file_destination + ";Version=3");
-            try
+            using (SQLiteConnection conn_source = new SQLiteConnection(Program.ConectionString))
             {
-                conn_source.Open();
-                conn_destination.Open();
-                conn_source.BackupDatabase(conn_destination, "main", "main", -1, null, -1);
-                conn_source.Close();
-                conn_destination.Close();
-                if (dict.Keys.Count > 9)
+                using (SQLiteConnection conn_destination = new SQLiteConnection("Data Source =" + file_destination + ";Version=3"))
                 {
-                    for (int i = 0; i < dict.Keys.Count - 9; i++)
+                    try
                     {
-                        File.Delete(dict.Values[i]);
+                        conn_source.Open();
+                        conn_destination.Open();
+                        conn_source.BackupDatabase(conn_destination, "main", "main", -1, null, -1);
+                        //conn_source.Close();
+                        //conn_destination.Close();
+                        if (dict.Keys.Count > 9)
+                        {
+                            for (int i = 0; i < dict.Keys.Count - 9; i++)
+                            {
+                                File.Delete(dict.Values[i]);
+                            }
+                        }
+                        //if (File.Exists(file_destination_temp))
+                        //{
+                        //    File.Delete(file_destination_temp);
+                        //}
+                    }
+                    catch (SQLiteException)
+                    {
+                        //MessageBox.Show(ex.Message);
+                    }
+                    catch (Exception)
+                    {
+                        //MessageBox.Show(ex.Message);
                     }
                 }
-                //if (File.Exists(file_destination_temp))
-                //{
-                //    File.Delete(file_destination_temp);
-                //}
             }
-            catch (SQLiteException ex)
-            {
-                //MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn_source.State == ConnectionState.Open)
-                {
-                    conn_source.Close();
-                }
-                if (conn_destination.State == ConnectionState.Open)
-                {
-                    conn_destination.Close();
-                }
-            }
-            conn_source.Dispose();
-            conn_destination.Dispose();
+            //finally
+            //{
+            //    if (conn_source.State == ConnectionState.Open)
+            //    {
+            //        conn_source.Close();
+            //    }
+            //    if (conn_destination.State == ConnectionState.Open)
+            //    {
+            //        conn_destination.Close();
+            //    }
+            //}
+            //conn_source.Dispose();
+            //conn_destination.Dispose();
 
             ps.PlaySound_WAV("\\Windows\\startup.wav");
 
             //MessageBox.Show((DateTime.Now-start).TotalSeconds.ToString());
+        }
+
+        public static bool exist_code_shop()
+        {
+            string shop = Program.get_code_shop();
+            return(shop != "");
+        }
+
+
+        private static void AddColumnDateExpiration()
+        {                
+            SQLiteConnection conn = null;            
+            using (conn = new SQLiteConnection(Program.ConectionString))
+            {
+                try
+                {
+                    conn.Open();                    
+                    SQLiteCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = "ALTER TABLE dt ADD COLUMN date_expiration DATETIME DEFAULT '1900-01-01';";                    
+                    cmd.ExecuteNonQuery();
+                }
+                catch
+                {
+                    //MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private static bool verify_db_id()
+        {
+            bool result = false;
+
+            SQLiteConnection conn = Program.ConnectForDataBase();
+            try
+            {
+                conn.Open();
+                string query = "SELECT db_id FROM constants";
+                SQLiteCommand command = new SQLiteCommand(query, conn);
+                object result_query = command.ExecuteScalar();
+                if (result_query == null)
+                {
+                    result = true;
+                }
+                else
+                {
+                    query = "SELECT COUNT(*) FROM dh WHERE db_id<>" + result_query.ToString() + " AND status<>3";
+                    command = new SQLiteCommand(query, conn);
+                    int count_doc = Convert.ToInt32(command.ExecuteScalar());
+                    result = true;
+
+                    if (count_doc != 0)
+                    {
+                        result = false;
+                        MessageBox.Show(" Существуют не переданные документы предыдущей базы ");
+                    }
+                    else
+                    {
+                        result = true;
+                    }
+                }
+                command.Dispose();
+                conn.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
+                result = false;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            conn.Dispose();
+
+            return result;
+        }
+
+
+
+        public static bool write_setting(int num_base)
+        {
+            bool result = true;
+
+            if (!verify_db_id())
+            {
+                result = false;
+                return result;
+            }
+            if (num_base == -1)
+            {
+                num_base = 1;
+            }
+
+            SQLiteConnection conn = Program.ConnectForDataBase();
+            try
+            {
+                conn.Open();
+                string query = "UPDATE constants SET db_id = " + num_base.ToString();
+                SQLiteCommand command = new SQLiteCommand(query, conn);
+                int rowsaffected = command.ExecuteNonQuery();
+                if (rowsaffected == 0)
+                {
+                    query = "INSERT INTO constants(db_id)VALUES(" + num_base.ToString() + ")";
+                    command = new SQLiteCommand(query, conn);
+                    command.ExecuteNonQuery();
+                }
+                command.Dispose();
+                conn.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                MessageBox.Show(" Ошибки при записи настроек " + ex.Message);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                MessageBox.Show(" Ошибки при записи настроек " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            conn.Dispose();
+
+            return result;
         }
 
 
@@ -732,6 +984,11 @@ namespace TSD
                 cmd.Transaction = myTrans;
                 cmd.ExecuteNonQuery();
 
+                cmd.CommandText = " CREATE TABLE sync(" +
+                   " datesync datetime NOT NULL)";
+                cmd.Transaction = myTrans;
+                cmd.ExecuteNonQuery();
+
                 cmd.CommandText = " CREATE TABLE constants(" +
                     " db_id smallint NOT NULL,date nvarchar(10))";
                 cmd.Transaction = myTrans;
@@ -775,7 +1032,8 @@ namespace TSD
                     " line_number int, "+
                     " its_sent smallint ,"+
                     " box nvarchar(10)," +
-                    " box_status nvarchar(1)"+
+                    " box_status nvarchar(1),"+
+                    " date_expiration datetime default '1900-01-01' " +
                     ")";
                 cmd.Transaction = myTrans;
                 cmd.ExecuteNonQuery();

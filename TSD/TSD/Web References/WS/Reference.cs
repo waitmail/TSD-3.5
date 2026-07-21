@@ -28,7 +28,7 @@ namespace TSD.WS {
         
         /// <remarks/>
         public WS() {
-            this.Url = "http://ch.sd2.com.ua/WS/WS.asmx";
+            this.Url = "http://ch.sd2.com.ru/WS/WS.asmx";
         }
         
         /// <remarks/>
@@ -74,9 +74,9 @@ namespace TSD.WS {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Get_Document_1c_Json", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string Get_Document_1c_Json(string guid, string data, int num_base) {
-            object[] results = this.Invoke("Get_Document_1c_Json", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDocument1cBoxJson", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetDocument1cBoxJson(string guid, string data, int num_base) {
+            object[] results = this.Invoke("GetDocument1cBoxJson", new object[] {
                         guid,
                         data,
                         num_base});
@@ -84,15 +84,15 @@ namespace TSD.WS {
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginGet_Document_1c_Json(string guid, string data, int num_base, System.AsyncCallback callback, object asyncState) {
-            return this.BeginInvoke("Get_Document_1c_Json", new object[] {
+        public System.IAsyncResult BeginGetDocument1cBoxJson(string guid, string data, int num_base, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("GetDocument1cBoxJson", new object[] {
                         guid,
                         data,
                         num_base}, callback, asyncState);
         }
         
         /// <remarks/>
-        public string EndGet_Document_1c_Json(System.IAsyncResult asyncResult) {
+        public string EndGetDocument1cBoxJson(System.IAsyncResult asyncResult) {
             object[] results = this.EndInvoke(asyncResult);
             return ((string)(results[0]));
         }
@@ -221,6 +221,30 @@ namespace TSD.WS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadJsonDocumentTSD", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string UploadJsonDocumentTSD(string guid, string data, int num_base) {
+            object[] results = this.Invoke("UploadJsonDocumentTSD", new object[] {
+                        guid,
+                        data,
+                        num_base});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginUploadJsonDocumentTSD(string guid, string data, int num_base, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("UploadJsonDocumentTSD", new object[] {
+                        guid,
+                        data,
+                        num_base}, callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public string EndUploadJsonDocumentTSD(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDocumentTSD", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string UploadDocumentTSD(string guid, string data, int num_base) {
             object[] results = this.Invoke("UploadDocumentTSD", new object[] {
@@ -313,6 +337,31 @@ namespace TSD.WS {
         
         /// <remarks/>
         public byte[] EndGetUpdateProgram(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDll", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetDll(string guid, string data, int num_base) {
+            object[] results = this.Invoke("GetDll", new object[] {
+                        guid,
+                        data,
+                        num_base});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginGetDll(string guid, string data, int num_base, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("GetDll", new object[] {
+                        guid,
+                        data,
+                        num_base}, callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public byte[] EndGetDll(System.IAsyncResult asyncResult) {
             object[] results = this.EndInvoke(asyncResult);
             return ((byte[])(results[0]));
         }

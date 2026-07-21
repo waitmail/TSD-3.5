@@ -61,12 +61,12 @@
             // 
             // btn_view_tovar
             // 
-            this.btn_view_tovar.Enabled = false;
             this.btn_view_tovar.Location = new System.Drawing.Point(3, 3);
             this.btn_view_tovar.Name = "btn_view_tovar";
             this.btn_view_tovar.Size = new System.Drawing.Size(310, 30);
             this.btn_view_tovar.TabIndex = 4;
-            this.btn_view_tovar.Text = "(1) Просмотр номенклатуры";
+            this.btn_view_tovar.Text = "(1) Сбор сроков хранения номенклатуры";
+            this.btn_view_tovar.Click += new System.EventHandler(this.btn_view_tovar_Click);
             // 
             // btn_check_price
             // 

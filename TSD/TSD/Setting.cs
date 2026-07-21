@@ -38,9 +38,7 @@ namespace TSD
             sw.WriteLine(device_id);
             sw.WriteLine(CryptorEngine.Encrypt(web_query, true, key));
             sw.Close();*/
-
             
-
             int num_base = Program.GetDbId();
             if (num_base == -1)
             {
@@ -50,7 +48,7 @@ namespace TSD
             string result_web_query="";
 
             try
-            {
+            {                
                 result_web_query = ws.ExistsUpdateProrgam(device_id, web_query, num_base);
 
                 if (result_web_query == "1000")
@@ -88,16 +86,19 @@ namespace TSD
         private void Setting_Load(object sender, EventArgs e)
         {
             
+            string startup_folder_path = Program.get_startup_folder_path();
+
+            if (File.Exists(startup_folder_path + "Newtonsoft.Json.Compact.dll"))
+            {
+                btn_get_dll.Enabled = false;
+            }
 
             //ws.GetExistDocumentTSD(Program.get_device_id,,Program.GetDbId());
             //cmb_bases.Items.Add("Чистый дом У");
-            cmb_bases.Items.Add("Монблан");
-            cmb_bases.Items.Add("Одежда");
-            cmb_bases.Items.Add("Чистый дом");
-            cmb_bases.Items.Add("Е-сеть");
-
-            
-            
+            cmb_bases.Items.Add("Не магазин");
+            //cmb_bases.Items.Add("Одежда");
+            cmb_bases.Items.Add("Магазин");
+            //cmb_bases.Items.Add("Е-сеть");            
 
             load_setting();            
             lbl_guid.Text = Program.get_device_id();
@@ -129,6 +130,10 @@ namespace TSD
             {
                 btn_get_new_program_Click(null, null);
             }
+            if (e.KeyCode == Keys.D3)
+            {
+                btn_get_dll_Click(null, null);
+            }
         }
 
 
@@ -143,13 +148,35 @@ namespace TSD
                 string query = "SELECT db_id FROM constants";
                 SQLiteCommand command = new SQLiteCommand(query, conn);
                 object db_id = command.ExecuteScalar();
-                if (db_id == null)
+                if ((db_id == null)||(Convert.ToInt16(db_id) == 0))
                 {
-                    cmb_bases.SelectedIndex = 0;
+                    if (cmb_bases.Items.Count == 2)
+                    {
+                        cmb_bases.SelectedIndex = 1;
+                    }
+                    else
+                    {
+                        cmb_bases.SelectedIndex = 2;
+                    }
                 }
                 else
                 {
-                    cmb_bases.SelectedIndex = Convert.ToInt16(db_id);
+                    int num_base = Convert.ToInt16(db_id);
+                    if (cmb_bases.Items.Count == 2)
+                    {
+                        if (num_base > 1)
+                        {
+                            cmb_bases.SelectedIndex = 1;
+                        }
+                        else
+                        {
+                            cmb_bases.SelectedIndex = num_base;
+                        }
+                    }
+                    else
+                    {
+                        cmb_bases.SelectedIndex = num_base;
+                    }
                 }
                 command.Dispose();
                 conn.Close();                
@@ -173,117 +200,120 @@ namespace TSD
         }
 
 
-        private bool verify_db_id()
-        {
-            bool result = false;
+        //private bool verify_db_id()
+        //{
+        //    bool result = false;
 
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            try
-            {
-                conn.Open();
-                string query = "SELECT db_id FROM constants";
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                object result_query = command.ExecuteScalar();
-                if (result_query == null)
-                {
-                    result = true;
-                }
-                else
-                {
-                    query = "SELECT COUNT(*) FROM dh WHERE db_id<>" + result_query.ToString() + " AND status<>3";
-                    command = new SQLiteCommand(query, conn);
-                    int count_doc = Convert.ToInt32(command.ExecuteScalar());
-                    result = true;
+        //    SQLiteConnection conn = Program.ConnectForDataBase();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT db_id FROM constants";
+        //        SQLiteCommand command = new SQLiteCommand(query, conn);
+        //        object result_query = command.ExecuteScalar();
+        //        if (result_query == null)
+        //        {
+        //            result = true;
+        //        }
+        //        else
+        //        {
+        //            query = "SELECT COUNT(*) FROM dh WHERE db_id<>" + result_query.ToString() + " AND status<>3";
+        //            command = new SQLiteCommand(query, conn);
+        //            int count_doc = Convert.ToInt32(command.ExecuteScalar());
+        //            result = true;
 
-                    if (count_doc != 0)
-                    {
-                        result = false;
-                        MessageBox.Show(" Существуют не переданные документы предыдущей базы ");
-                    }
-                    else
-                    {
-                        result = true;
-                    }                 
-                }
-                command.Dispose();
-                conn.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
-                result = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
-                result = false;
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //            if (count_doc != 0)
+        //            {
+        //                result = false;
+        //                MessageBox.Show(" Существуют не переданные документы предыдущей базы ");
+        //            }
+        //            else
+        //            {
+        //                result = true;
+        //            }                 
+        //        }
+        //        command.Dispose();
+        //        conn.Close();
+        //    }
+        //    catch (SQLiteException ex)
+        //    {
+        //        MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
+        //        result = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" Ошибки при проверке db_id " + ex.Message);
+        //        result = false;
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            conn.Dispose();
+        //    conn.Dispose();
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
-        private void write_setting()
-        {
-            bool error = false;
+        //private void write_setting()
+        //{
+        //    bool error = false;
 
-            if (!verify_db_id())
-            {
-                return;
-            }
+        //    if (!verify_db_id())
+        //    {
+        //        return;
+        //    }
 
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            try
-            {
-                conn.Open();
-                string query = "UPDATE constants SET db_id = "+cmb_bases.SelectedIndex.ToString();
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                int rowsaffected = command.ExecuteNonQuery();
-                if (rowsaffected == 0)
-                {
-                    query = "INSERT INTO constants(db_id)VALUES(" + cmb_bases.SelectedIndex.ToString()+")";
-                    command = new SQLiteCommand(query, conn);
-                    command.ExecuteNonQuery();
-                }
-                command.Dispose();
-                conn.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(" Ошибки при записи настроек "+ex.Message);
-                error = true;
-            }
-            catch (Exception ex)
-            {
-                error = true;
-                MessageBox.Show(" Ошибки при записи настроек " + ex.Message);                
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-            conn.Dispose();
-            if (!error)
-            {
-                this.Close();
-            }
-        }
+        //    SQLiteConnection conn = Program.ConnectForDataBase();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "UPDATE constants SET db_id = "+cmb_bases.SelectedIndex.ToString();
+        //        SQLiteCommand command = new SQLiteCommand(query, conn);
+        //        int rowsaffected = command.ExecuteNonQuery();
+        //        if (rowsaffected == 0)
+        //        {
+        //            query = "INSERT INTO constants(db_id)VALUES(" + cmb_bases.SelectedIndex.ToString()+")";
+        //            command = new SQLiteCommand(query, conn);
+        //            command.ExecuteNonQuery();
+        //        }
+        //        command.Dispose();
+        //        conn.Close();
+        //    }
+        //    catch (SQLiteException ex)
+        //    {
+        //        MessageBox.Show(" Ошибки при записи настроек "+ex.Message);
+        //        error = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        error = true;
+        //        MessageBox.Show(" Ошибки при записи настроек " + ex.Message);                
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //    conn.Dispose();
+        //    if (!error)
+        //    {
+        //        this.Close();
+        //    }
+        //}
 
         private void btn_write_setting_Click(object sender, EventArgs e)
         {
-            write_setting();
+            if (Program.write_setting(cmb_bases.SelectedIndex))
+            {
+                this.Close();
+            }
         }
 
         private void btn_close_Click(object sender, EventArgs e)
@@ -293,34 +323,81 @@ namespace TSD
 
         private void btn_get_new_program_Click(object sender, EventArgs e)
         {
-            string startup_folder_path = Program.get_startup_folder_path();
+            try
+            {
+                string startup_folder_path = Program.get_startup_folder_path();
+                TSD.WS.WS ws = new TSD.WS.WS();
+                string device_id = Program.get_device_id();
+                string key = device_id + CryptorEngine.get_count_day_tsd();
+                string web_query = CryptorEngine.Encrypt(Program.get_device_id() + "|" + lbl_have_new_version.Tag.ToString(), true, key);
+                byte[] answer = ws.GetUpdateProgram(Program.get_device_id(), web_query, Program.GetDbId());
+                if (answer.Length > 1000)
+                {
+                    using (FileStream fs = File.OpenWrite(startup_folder_path + "_TSD.exe"))
+                    {
+                        fs.Write(answer, 0, answer.Length);
+                    }
+                    if (File.Exists(startup_folder_path + "_TSD.exe"))
+                    {
+                        File.Move(startup_folder_path + "TSD.exe", startup_folder_path + "old_TSD.exe");
+                        File.Move(startup_folder_path + "_TSD.exe", startup_folder_path + "TSD.exe");
+                        File.Delete(startup_folder_path + "_TSD.exe");
+                    }
+
+                    MessageBox.Show("Обновление получено, необходимо перезапустить программу");
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                    //Application.Exit();
+                    /*if (File.Exists("/Application/StarterTSD.exe"))
+                    {
+                        Process process = new Process();
+                        process.StartInfo.FileName = "/Application/TSD.exe";
+                        process.StartInfo.Arguments = "";
+                        process.Start();
+                    }*/
+                }
+                else
+                {
+                    MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при получении обновления "+"\r\n"+ex.Message);
+            }
+        }
+
+        private void btn_get_dll_Click(object sender, EventArgs e)
+        {
+            
+            string startup_folder_path = Program.get_startup_folder_path();          
+
             TSD.WS.WS ws = new TSD.WS.WS();
             string device_id = Program.get_device_id();
             string key = device_id + CryptorEngine.get_count_day_tsd();
-            string web_query = CryptorEngine.Encrypt(Program.get_device_id() + "|" + lbl_have_new_version.Tag.ToString(), true, key);
-            byte[] answer = ws.GetUpdateProgram(Program.get_device_id(), web_query, Program.GetDbId());
+            string web_query = CryptorEngine.Encrypt(Program.get_device_id() + "|" + Program.get_device_id(), true, key);
+            byte[] answer = ws.GetDll(Program.get_device_id(), web_query, Program.GetDbId());
             if (answer.Length > 1000)
             {
-                using (FileStream fs = File.OpenWrite(startup_folder_path + "_TSD.exe"))
+                using (FileStream fs = File.OpenWrite(startup_folder_path + "Newtonsoft.Json.Compact.dll"))
                 {
                     fs.Write(answer, 0, answer.Length);
                 }
-                MessageBox.Show("Обновление получено, необходимо перезапустить программу");
+                MessageBox.Show("Dll успешно получена, необходимо перезапустить программу");
                 this.DialogResult = DialogResult.Cancel;
-                this.Close();
-                //Application.Exit();
-                /*if (File.Exists("/Application/StarterTSD.exe"))
-                {
-                    Process process = new Process();
-                    process.StartInfo.FileName = "/Application/TSD.exe";
-                    process.StartInfo.Arguments = "";
-                    process.Start();
-                }*/
+                this.Close();                
             }
             else
             {
-                MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
-            }          
+                if (UTF8Encoding.UTF8.GetString(answer, 0, answer.Count()) == "1000")
+                {
+                    MessageBox.Show("Этот тсд еще не зарегистрирован ");
+                }
+                else
+                {
+                    MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
+                }
+            }
         }
     }
 }

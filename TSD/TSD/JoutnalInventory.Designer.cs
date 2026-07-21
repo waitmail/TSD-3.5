@@ -47,13 +47,13 @@
             this.label_comment.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
             this.label_comment.Location = new System.Drawing.Point(4, 212);
             this.label_comment.Name = "label_comment";
-            this.label_comment.Size = new System.Drawing.Size(311, 57);
+            this.label_comment.Size = new System.Drawing.Size(311, 55);
             // 
             // btn_new_document
             // 
-            this.btn_new_document.Location = new System.Drawing.Point(4, 272);
+            this.btn_new_document.Location = new System.Drawing.Point(4, 270);
             this.btn_new_document.Name = "btn_new_document";
-            this.btn_new_document.Size = new System.Drawing.Size(310, 20);
+            this.btn_new_document.Size = new System.Drawing.Size(310, 22);
             this.btn_new_document.TabIndex = 1;
             this.btn_new_document.Text = "Новый";
             this.btn_new_document.Visible = false;

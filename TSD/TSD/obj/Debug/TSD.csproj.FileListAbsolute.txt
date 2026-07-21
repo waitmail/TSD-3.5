@@ -1,59 +1,38 @@
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\bin\Debug\TSD.exe
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\bin\Debug\TSD.pdb
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\bin\Debug\System.Data.SqlServerCe.dll
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\obj\Debug\TSD.exe
-C:\Users\gaa\Documents\Visual Studio 2008\Projects\TSD\TSD\obj\Debug\TSD.pdb
-C:\TSD\TSD\bin\Debug\TSD.exe
-C:\TSD\TSD\bin\Debug\TSD.pdb
-C:\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
-C:\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
-C:\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
-C:\TSD\TSD\obj\Debug\TSD.exe
-C:\TSD\TSD\obj\Debug\TSD.pdb
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\bin\Debug\TSD.exe
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\bin\Debug\TSD.pdb
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.exe
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.pdb
-D:\TSD 3.5\TSD\TSD\bin\Debug\TSD.exe
-D:\TSD 3.5\TSD\TSD\bin\Debug\TSD.pdb
-D:\TSD 3.5\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
-D:\TSD 3.5\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
-D:\TSD 3.5\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
-D:\TSD 3.5\TSD\TSD\obj\Debug\TSD.exe
-D:\TSD 3.5\TSD\TSD\obj\Debug\TSD.pdb
-D:\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentList.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentList.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.ChageData.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.MainForm.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.Setting.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\bin\Debug\TSD.exe
 D:\Last Cash8\TSD 3.5\TSD\TSD\bin\Debug\TSD.pdb
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.Boxes.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.ChageData.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.CheckAndPrintPrices.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentInventory1.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentList.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.EnterExpirationDate.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.JoutnalInventory.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.MainForm.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectButtonBox.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectProducts.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.Setting.resources
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.exe
 D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.pdb
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.CheckAndPrintPrices.resources
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentInventory1.resources
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.JoutnalInventory.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.CheckAndPrintPrices.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentInventory1.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.JoutnalInventory.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectProducts.resources
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectProducts.resources
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\bin\Debug\Newtonsoft.Json.Compact.dll
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\bin\Debug\Newtonsoft.Json.Compact.pdb
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\bin\Debug\Newtonsoft.Json.Compact.xml
-D:\disk f\MyProject\TSD 3.5\TSD\TSD\obj\Debug\TSD.Boxes.resources
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.Boxes.resources
-D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectButtonBox.resources
+D:\Last Cash8\TSD 3.5\TSD\TSD\obj\Debug\TSD.WorkWithBarcode.resources
+Z:\TSD 3.5\TSD\TSD\bin\Debug\TSD.exe
+Z:\TSD 3.5\TSD\TSD\bin\Debug\TSD.pdb
+Z:\TSD 3.5\TSD\TSD\obj\Debug\ResolveAssemblyReference.cache
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.Boxes.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.ChageData.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.CheckAndPrintPrices.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentInventory1.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.DocumentList.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.EnterExpirationDate.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.JoutnalInventory.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.MainForm.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.Properties.Resources.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectButtonBox.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.SelectProducts.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.Setting.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.WorkWithBarcode.resources
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.csproj.GenerateResource.Cache
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.exe
+Z:\TSD 3.5\TSD\TSD\obj\Debug\TSD.pdb

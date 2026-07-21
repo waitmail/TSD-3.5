@@ -28,7 +28,7 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="Get_Document_1c_Json">
+      <s:element name="GetDocument1cBoxJson">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="guid" type="s:string" />
@@ -37,10 +37,10 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="Get_Document_1c_JsonResponse">
+      <s:element name="GetDocument1cBoxJsonResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="Get_Document_1c_JsonResult" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetDocument1cBoxJsonResult" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -125,6 +125,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="UploadJsonDocumentTSD">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="guid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="num_base" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadJsonDocumentTSDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadJsonDocumentTSDResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="UploadDocumentTSD">
         <s:complexType>
           <s:sequence>
@@ -189,6 +205,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetDll">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="guid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="num_base" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDllResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDllResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="HelloWorldSoapIn">
@@ -203,11 +235,11 @@
   <wsdl:message name="Get_Shop_On_GuidSoapOut">
     <wsdl:part name="parameters" element="tns:Get_Shop_On_GuidResponse" />
   </wsdl:message>
-  <wsdl:message name="Get_Document_1c_JsonSoapIn">
-    <wsdl:part name="parameters" element="tns:Get_Document_1c_Json" />
+  <wsdl:message name="GetDocument1cBoxJsonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDocument1cBoxJson" />
   </wsdl:message>
-  <wsdl:message name="Get_Document_1c_JsonSoapOut">
-    <wsdl:part name="parameters" element="tns:Get_Document_1c_JsonResponse" />
+  <wsdl:message name="GetDocument1cBoxJsonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDocument1cBoxJsonResponse" />
   </wsdl:message>
   <wsdl:message name="Get_Document_1cSoapIn">
     <wsdl:part name="parameters" element="tns:Get_Document_1c" />
@@ -239,6 +271,12 @@
   <wsdl:message name="GetTMCForTSDJsonSoapOut">
     <wsdl:part name="parameters" element="tns:GetTMCForTSDJsonResponse" />
   </wsdl:message>
+  <wsdl:message name="UploadJsonDocumentTSDSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadJsonDocumentTSD" />
+  </wsdl:message>
+  <wsdl:message name="UploadJsonDocumentTSDSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadJsonDocumentTSDResponse" />
+  </wsdl:message>
   <wsdl:message name="UploadDocumentTSDSoapIn">
     <wsdl:part name="parameters" element="tns:UploadDocumentTSD" />
   </wsdl:message>
@@ -263,6 +301,12 @@
   <wsdl:message name="GetUpdateProgramSoapOut">
     <wsdl:part name="parameters" element="tns:GetUpdateProgramResponse" />
   </wsdl:message>
+  <wsdl:message name="GetDllSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDll" />
+  </wsdl:message>
+  <wsdl:message name="GetDllSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDllResponse" />
+  </wsdl:message>
   <wsdl:portType name="WSSoap">
     <wsdl:operation name="HelloWorld">
       <wsdl:input message="tns:HelloWorldSoapIn" />
@@ -272,9 +316,9 @@
       <wsdl:input message="tns:Get_Shop_On_GuidSoapIn" />
       <wsdl:output message="tns:Get_Shop_On_GuidSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="Get_Document_1c_Json">
-      <wsdl:input message="tns:Get_Document_1c_JsonSoapIn" />
-      <wsdl:output message="tns:Get_Document_1c_JsonSoapOut" />
+    <wsdl:operation name="GetDocument1cBoxJson">
+      <wsdl:input message="tns:GetDocument1cBoxJsonSoapIn" />
+      <wsdl:output message="tns:GetDocument1cBoxJsonSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Get_Document_1c">
       <wsdl:input message="tns:Get_Document_1cSoapIn" />
@@ -296,6 +340,10 @@
       <wsdl:input message="tns:GetTMCForTSDJsonSoapIn" />
       <wsdl:output message="tns:GetTMCForTSDJsonSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="UploadJsonDocumentTSD">
+      <wsdl:input message="tns:UploadJsonDocumentTSDSoapIn" />
+      <wsdl:output message="tns:UploadJsonDocumentTSDSoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="UploadDocumentTSD">
       <wsdl:input message="tns:UploadDocumentTSDSoapIn" />
       <wsdl:output message="tns:UploadDocumentTSDSoapOut" />
@@ -311,6 +359,10 @@
     <wsdl:operation name="GetUpdateProgram">
       <wsdl:input message="tns:GetUpdateProgramSoapIn" />
       <wsdl:output message="tns:GetUpdateProgramSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDll">
+      <wsdl:input message="tns:GetDllSoapIn" />
+      <wsdl:output message="tns:GetDllSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WSSoap" type="tns:WSSoap">
@@ -333,8 +385,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="Get_Document_1c_Json">
-      <soap:operation soapAction="http://tempuri.org/Get_Document_1c_Json" style="document" />
+    <wsdl:operation name="GetDocument1cBoxJson">
+      <soap:operation soapAction="http://tempuri.org/GetDocument1cBoxJson" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -387,6 +439,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="UploadJsonDocumentTSD">
+      <soap:operation soapAction="http://tempuri.org/UploadJsonDocumentTSD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="UploadDocumentTSD">
       <soap:operation soapAction="http://tempuri.org/UploadDocumentTSD" style="document" />
       <wsdl:input>
@@ -423,6 +484,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetDll">
+      <soap:operation soapAction="http://tempuri.org/GetDll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="WSSoap12" type="tns:WSSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -444,8 +514,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="Get_Document_1c_Json">
-      <soap12:operation soapAction="http://tempuri.org/Get_Document_1c_Json" style="document" />
+    <wsdl:operation name="GetDocument1cBoxJson">
+      <soap12:operation soapAction="http://tempuri.org/GetDocument1cBoxJson" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -498,6 +568,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="UploadJsonDocumentTSD">
+      <soap12:operation soapAction="http://tempuri.org/UploadJsonDocumentTSD" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="UploadDocumentTSD">
       <soap12:operation soapAction="http://tempuri.org/UploadDocumentTSD" style="document" />
       <wsdl:input>
@@ -527,6 +606,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetUpdateProgram">
       <soap12:operation soapAction="http://tempuri.org/GetUpdateProgram" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDll">
+      <soap12:operation soapAction="http://tempuri.org/GetDll" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

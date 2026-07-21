@@ -36,6 +36,7 @@
             this.lbl_guid = new System.Windows.Forms.Label();
             this.btn_get_new_program = new System.Windows.Forms.Button();
             this.lbl_have_new_version = new System.Windows.Forms.Label();
+            this.btn_get_dll = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cmb_bases
@@ -56,9 +57,9 @@
             // btn_write_setting
             // 
             this.btn_write_setting.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
-            this.btn_write_setting.Location = new System.Drawing.Point(3, 232);
+            this.btn_write_setting.Location = new System.Drawing.Point(3, 258);
             this.btn_write_setting.Name = "btn_write_setting";
-            this.btn_write_setting.Size = new System.Drawing.Size(155, 60);
+            this.btn_write_setting.Size = new System.Drawing.Size(155, 34);
             this.btn_write_setting.TabIndex = 2;
             this.btn_write_setting.Text = "(0) Записать";
             this.btn_write_setting.Click += new System.EventHandler(this.btn_write_setting_Click);
@@ -66,9 +67,9 @@
             // btn_close
             // 
             this.btn_close.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
-            this.btn_close.Location = new System.Drawing.Point(164, 232);
+            this.btn_close.Location = new System.Drawing.Point(164, 258);
             this.btn_close.Name = "btn_close";
-            this.btn_close.Size = new System.Drawing.Size(150, 60);
+            this.btn_close.Size = new System.Drawing.Size(150, 34);
             this.btn_close.TabIndex = 3;
             this.btn_close.Text = "(1) Закрыть";
             this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
@@ -95,9 +96,9 @@
             this.btn_get_new_program.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
             this.btn_get_new_program.Location = new System.Drawing.Point(3, 171);
             this.btn_get_new_program.Name = "btn_get_new_program";
-            this.btn_get_new_program.Size = new System.Drawing.Size(311, 56);
+            this.btn_get_new_program.Size = new System.Drawing.Size(311, 44);
             this.btn_get_new_program.TabIndex = 5;
-            this.btn_get_new_program.Text = "(2)Загрузить обновление";
+            this.btn_get_new_program.Text = "(2) Загрузить обновление программы";
             this.btn_get_new_program.Click += new System.EventHandler(this.btn_get_new_program_Click);
             // 
             // lbl_have_new_version
@@ -110,6 +111,16 @@
             this.lbl_have_new_version.Size = new System.Drawing.Size(309, 59);
             this.lbl_have_new_version.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // btn_get_dll
+            // 
+            this.btn_get_dll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
+            this.btn_get_dll.Location = new System.Drawing.Point(5, 219);
+            this.btn_get_dll.Name = "btn_get_dll";
+            this.btn_get_dll.Size = new System.Drawing.Size(308, 34);
+            this.btn_get_dll.TabIndex = 9;
+            this.btn_get_dll.Text = "(3) Загрузить Dll";
+            this.btn_get_dll.Click += new System.EventHandler(this.btn_get_dll_Click);
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -117,6 +128,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
+            this.Controls.Add(this.btn_get_dll);
             this.Controls.Add(this.lbl_have_new_version);
             this.Controls.Add(this.btn_get_new_program);
             this.Controls.Add(this.lbl_guid);
@@ -144,5 +156,6 @@
         private System.Windows.Forms.Label lbl_guid;
         private System.Windows.Forms.Button btn_get_new_program;
         private System.Windows.Forms.Label lbl_have_new_version;
+        private System.Windows.Forms.Button btn_get_dll;
     }
 }

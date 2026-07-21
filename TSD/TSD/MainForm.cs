@@ -26,6 +26,7 @@ namespace TSD
             this.Paint += new PaintEventHandler(MainForm_Paint);
             //PlaySound ps = new PlaySound();
             //ps.PlaySound_WAV("\\Windows\\Decode.wav");
+            //Program.write_log("Start programm");
             
         }
 
@@ -188,11 +189,12 @@ namespace TSD
         }
 
         void MainForm_Load(object sender, EventArgs e)
-        {
+        {            
             timer_backup_data.Interval = 3600000;//1800000;
             timer_backup_data.Enabled = true;
             timer_backup_data.Tick += new EventHandler(timer_backup_data_Tick);
             get_zagolovok();
+            //Program.UploadLogs();
         }
 
         private void timer_backup_data_Tick(object sender, EventArgs e)
@@ -208,9 +210,14 @@ namespace TSD
         protected override void OnKeyDown(KeyEventArgs e)
         {
             //base.OnKeyDown(e);
+            
             if (e.KeyCode == Keys.D0)
             {
                 btn_change_data_Click(null, null); 
+            }
+            else if (e.KeyCode == Keys.D1)
+            {
+                btn_view_tovar_Click(null, null);
             }
             else if (e.KeyCode == Keys.D6)
             {
@@ -232,11 +239,11 @@ namespace TSD
             {
                 this.Close();
             }
-            else if(e.KeyCode == Keys.D7)
+            else if (e.KeyCode == Keys.D7)
             {
                 btn_setting_Click(null, null);
             }
-            else if(e.KeyCode == Keys.D2)
+            else if (e.KeyCode == Keys.D2)
             {
                 btn_check_price_Click(null, null);
             }
@@ -244,18 +251,26 @@ namespace TSD
 
         private void btn_inventory_Click(object sender, EventArgs e)
         {
-            JoutnalInventory ji = new JoutnalInventory();
-            ji.typ_doc = 1;
-            ji.ShowDialog();
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
+            using (JoutnalInventory ji = new JoutnalInventory())
+            {
+                ji.typ_doc = 1;
+                ji.ShowDialog();
+            }
         }
         
         private void btn_change_data_Click(object sender, EventArgs e)
         {
             this.timer_backup_data.Enabled = false;
-            ChageData cd = new ChageData();
-            cd.ShowDialog();            
-            this.timer_backup_data.Enabled = true;
-            cd.Dispose();
+            using (ChageData cd = new ChageData())
+            {
+                cd.ShowDialog();
+            }
+            this.timer_backup_data.Enabled = true;            
         }
         
         private void btn_Esc_Click(object sender, EventArgs e)
@@ -265,12 +280,32 @@ namespace TSD
         
         private void btn_goods_receipt_Click(object sender, EventArgs e)
         {
+            //if (!Program.exist_code_shop())
+            //{
+            //    MessageBox.Show("Необходимо выполнить полную синхронизацию");
+            //    return;
+            //}
+            //this.timer_backup_data.Enabled = false;
+            //JoutnalInventory ji = new JoutnalInventory();
+            //ji.typ_doc = 2;
+            //ji.ShowDialog();
+            //ji.Dispose();
+            //this.timer_backup_data.Enabled = true;         
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
+
             this.timer_backup_data.Enabled = false;
-            JoutnalInventory ji = new JoutnalInventory();
-            ji.typ_doc = 2;
-            ji.ShowDialog();
-            ji.Dispose();
-            this.timer_backup_data.Enabled = true;             
+
+            using (JoutnalInventory ji = new JoutnalInventory())
+            {
+                ji.typ_doc = 2;
+                ji.ShowDialog();
+            }
+
+            this.timer_backup_data.Enabled = true;
         }
 
         private void btn_full_load_Click(object sender, EventArgs e)
@@ -280,6 +315,11 @@ namespace TSD
 
         private void btn_customer_order_Click(object sender, EventArgs e)
         {
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
             this.timer_backup_data.Enabled = false;
             JoutnalInventory ji = new JoutnalInventory();
             ji.typ_doc = 3;
@@ -300,22 +340,81 @@ namespace TSD
 
         private void btn_check_price_Click(object sender, EventArgs e)
         {
+            //if (!Program.exist_code_shop())
+            //{
+                
+            //    MessageBox.Show("Необходимо выполнить полную синхронизацию");
+            //    return;
+            //}
+            //this.timer_backup_data.Enabled = false;
+            //JoutnalInventory ji = new JoutnalInventory();
+            //ji.typ_doc = 4;
+            //ji.ShowDialog();
+            //ji.Dispose();
+            //this.timer_backup_data.Enabled = true;      
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
+
             this.timer_backup_data.Enabled = false;
-            JoutnalInventory ji = new JoutnalInventory();
-            ji.typ_doc = 4;
-            ji.ShowDialog();
-            ji.Dispose();
-            this.timer_backup_data.Enabled = true;       
+
+            using (JoutnalInventory ji = new JoutnalInventory())
+            {
+                ji.typ_doc = 4;
+                ji.ShowDialog();
+            }
+
+            this.timer_backup_data.Enabled = true;
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
             this.timer_backup_data.Enabled = false;
-            JoutnalInventory ji = new JoutnalInventory();
-            ji.typ_doc = 5;
-            ji.ShowDialog();
-            ji.Dispose();
+            using (JoutnalInventory ji = new JoutnalInventory())
+            {
+                ji.typ_doc = 5;
+                ji.ShowDialog();
+            }            
             this.timer_backup_data.Enabled = true;      
+        }
+
+        private void btn_view_tovar_Click(object sender, EventArgs e)
+        {
+            //if (!Program.exist_code_shop())
+            //{
+
+            //    MessageBox.Show("Необходимо выполнить полную синхронизацию");
+            //    return;
+            //}
+            //this.timer_backup_data.Enabled = false;
+            //JoutnalInventory ji = new JoutnalInventory();
+            //ji.typ_doc = 5;
+            //ji.ShowDialog();
+            //ji.Dispose();
+            //this.timer_backup_data.Enabled = true;     
+            if (!Program.exist_code_shop())
+            {
+                MessageBox.Show("Необходимо выполнить полную синхронизацию");
+                return;
+            }
+
+            this.timer_backup_data.Enabled = false;
+
+            using (JoutnalInventory ji = new JoutnalInventory())
+            {
+                ji.typ_doc = 5;
+                ji.ShowDialog();
+            }
+
+            this.timer_backup_data.Enabled = true;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace TSD
 
         public string guid = "";
         public bool its_new = false;
-        public string type="";
+        public string typ_doc = "";
         public string label_decription_document = ""; 
         private int index_position=0;
         private DateTime datetime_select_position = DateTime.Now;
@@ -83,35 +83,33 @@ namespace TSD
              
         }
 
-        private string get_characteristic_guid(string tovar_code,string characteristic_name)
+        private string get_characteristic_guid(string tovar_code, string characteristic_name)
         {
             string result = "";
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string query = "SELECT guid FROM characteristic WHERE tovar_code=" + tovar_code + 
-                    " AND name='" + characteristic_name.Trim() + "'";
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                object result_query = command.ExecuteScalar();
-                if (result_query != null)
+                try
                 {
-                    result = result_query.ToString();
+                    conn.Open();
+                    string query = "SELECT guid FROM characteristic WHERE tovar_code=@tovar_code AND name=@name";
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("@tovar_code", tovar_code);
+                        command.Parameters.AddWithValue("@name", characteristic_name.Trim());
+                        object result_query = command.ExecuteScalar();
+                        if (result_query != null)
+                        {
+                            result = result_query.ToString();
+                        }
+                    }
                 }
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
+                catch (SQLiteException ex)
                 {
-                    conn.Close();
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
             return result;
@@ -242,13 +240,16 @@ namespace TSD
 
                 if (e.KeyCode == Keys.Enter)
                 {
-                    if (num_box == "")
+                    if ((typ_doc != "4") && (typ_doc != "5"))
                     {
-                        MessageBox.Show("Доступно только из коробки");
-                        return;
+                        if (num_box == "")
+                        {
+                            MessageBox.Show("Доступно только из коробки");
+                            return;
+                        }
                     }
                     //return;//пока что отбой 
-                    if (type != "4")
+                    if ((typ_doc != "4") && (typ_doc != "5"))
                     {
                         WorkWithBarcode wb = new WorkWithBarcode();
                         ListViewItem lvi = listView_stroki.Items[listView_stroki.SelectedIndices[0]];
@@ -308,8 +309,10 @@ namespace TSD
                     else
                     {
                         CheckAndPrintPrices chp = new CheckAndPrintPrices();
+                        chp.typ_doc = this.typ_doc;
                         ListViewItem lvi = listView_stroki.Items[listView_stroki.SelectedIndices[0]];
                         string tovar_code = lvi.Tag.ToString();
+                        chp.txtB_input_barcode.Text = tovar_code;
                         //find_barcode_or_code_in_tovar(tovar_code);//Непонятно зачем это здесь 
                         chp.txtB_tovar.Text = tovar_code + "," + listView_stroki.Items[lvi.Index].SubItems[3].Text + ";" +
                         listView_stroki.Items[lvi.Index].SubItems[4].Text;
@@ -335,8 +338,10 @@ namespace TSD
                         //wb.label_количество_в_магазине.Text = " в документе " + listView_stroki.Items[lvi.Index].SubItems[1].Text.Trim();
                         chp.txtB_tovar.Text = tovar_code + "," + characteristic_name;//listView_stroki.Items[lvi.Index].SubItems[1].Text.Trim(); 
                         string num_str = lvi.SubItems[0].Text;
-                        //wb.display_quantity = display_quantity;
+                        //wb.display_quantity = display_quantity;                        
                         chp.close_this_form = true;
+                        chp.label_product_expiration_date.Text = lvi.SubItems[5].Text;
+                        chp.txtB_total_price_tags.Text = chp.get_quantity_shop();
                         chp.txtB_quantity.Focus();
                         chp.ShowDialog();
                         //переррисовать список и спозиционироваться на старой строке 
@@ -646,7 +651,10 @@ namespace TSD
 
             if (find)
             {
-                listView_stroki_KeyDown(null, new KeyEventArgs(Keys.Enter));
+                if (typ_doc != "5")
+                {
+                    listView_stroki_KeyDown(null, new KeyEventArgs(Keys.Enter));
+                }
             }
             else
             {
@@ -682,143 +690,192 @@ namespace TSD
             }
 
            // listView_stroki.Enabled = false;
-            if (type == "1")
+            if (typ_doc == "1")
             {
                 this.Text = "Инвентаризация";
             }
-            else if (type == "2")
+            else if (typ_doc == "2")
             {
                 this.Text = "Поступление";
             }
-            else if (type == "3")
+            else if (typ_doc == "3")
             {
                 this.Text = "Заказ клиента";
             }
-            else if (type == "4")
+            else if (typ_doc == "4")
             {
                 this.Text = " Проверка и печать ценников ";
             }
-
-
+            else if (typ_doc == "5")
+            {
+                this.Text = " Сбор сроков товаров ";
+            }
+            
             listView_stroki.Items.Clear();
 
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string query = "SELECT type,date,info_1s,status,display_quantity FROM dh where guid=@guid";
-
-                SQLiteParameter _guid = new SQLiteParameter("guid", guid);
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                command.Parameters.Add(_guid);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                try
                 {
-                    type = reader["type"].ToString();
-                    date.Value = reader.GetDateTime(1);
-                    txtB_info_1s.Text = reader["info_1s"].ToString();
-                    //comment = txtB_info_1s.Text;
-                    txtB_status.Text = reader["status"].ToString();
-                    display_quantity = Convert.ToInt16(reader["display_quantity"]);
-                }
-                reader.Close();
-                paint_column();                
+                    SQLiteCommand command = null;
+                    conn.Open();
+                    string query = "SELECT type,date,info_1s,status,display_quantity FROM dh where guid=@guid";
 
-                string dop_query = "";
-                if (!show_all_stroki)
-                {
-                    this.Text += "  Отбор ";//"  расхождения ) верх. кнопки ";
-                    dop_query = " AND dt.quantity <> dt.quantity_shop ";
-                }
-                else
-                {
-                    this.Text += "";
-                }
-                if (num_box == "")
-                {
-                    query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
-                        " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
-                        " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
-                        " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
-                        " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
-                        " where dt.guid=@guid " + dop_query +
-                        " order by dt.line_number";
-                }
-                else
-                {
-                    query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
-                                           " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
-                                           " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
-                                           " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
-                                           " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
-                                           " where dt.guid=@guid AND box=@box" + dop_query +
-                                           " order by dt.line_number";
-                }
-
-                _guid = new SQLiteParameter("guid", guid);
-                SQLiteParameter _box = new SQLiteParameter("box", num_box);
-
-                command = new SQLiteCommand(query, conn);
-                command.Parameters.Add(_guid);
-                command.Parameters.Add(_box);
-                reader = command.ExecuteReader();
-                
-                while (reader.Read())
-                {                                      
-
-                    ListViewItem item = new ListViewItem(reader["line_number"].ToString());                    
-                    item.SubItems.Add(reader["quantity_shop"].ToString());
-                    if (display_quantity == 1)
+                    SQLiteParameter _guid = new SQLiteParameter("guid", guid);
+                    using (command = new SQLiteCommand(query, conn))
                     {
-                        item.SubItems.Add(reader["quantity"].ToString());
-                    }
-                    item.SubItems.Add(reader["tovar_name"].ToString());
-                    item.SubItems.Add(reader["characteristic_name"].ToString());                    
-                    item.SubItems.Add(reader["price_buy"].ToString());                
-                    item.Tag = reader["tovar_code"].ToString();
-                    listView_stroki.Items.Add(item);
-
-                    //i++;
-                }
-                
-                if (num_str != 0)
-                {
-                    if (listView_stroki.Items.Count != 0)
-                    {
-                        int current_index = 0;
-                        foreach (ListViewItem item in listView_stroki.Items)
+                        command.Parameters.Add(_guid);
+                        using (SQLiteDataReader reader = command.ExecuteReader())
                         {
-                            if (item.SubItems[0].Text == num_str.ToString())
+                            while (reader.Read())
                             {
-                                listView_stroki.EnsureVisible(current_index);
-                                listView_stroki.Focus();
-                                listView_stroki.Items[current_index].Selected = true;
-                                listView_stroki.Items[current_index].Focused = true;                       
+                                typ_doc = reader["type"].ToString();
+                                date.Value = reader.GetDateTime(1);
+                                txtB_info_1s.Text = reader["info_1s"].ToString();
+                                //comment = txtB_info_1s.Text;
+                                txtB_status.Text = reader["status"].ToString();
+                                display_quantity = Convert.ToInt16(reader["display_quantity"]);
                             }
-                            current_index++;
-                        }                                                
-                    }
-                }
-                
-                //удалить строки с одинаковым количеством
-                conn.Close();
+                        }
+                        //reader.Close();
+                        paint_column();
 
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
+                        string dop_query = "";
+                        if (!show_all_stroki)
+                        {
+                            this.Text += "  Отбор ";//"  расхождения ) верх. кнопки ";
+                            dop_query = " AND dt.quantity <> dt.quantity_shop ";
+                        }
+                        else
+                        {
+                            this.Text += "";
+                        }
+                        if (num_box == "")
+                        {
+                            if (typ_doc == "4")
+                            {
+                                query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
+                                    " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
+                                    " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
+                                    " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
+                                    " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
+                                    " where dt.guid=@guid " + dop_query +
+                                    " order by dt.line_number";
+                            }
+                            else if (typ_doc == "5")
+                            {
+                                query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
+                                                           " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
+                                                           " characteristic.name AS characteristic_name,dt.line_number,dt.date_expiration FROM dt " +
+                                                           " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
+                                                           " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
+                                                           " where dt.guid=@guid " + dop_query +
+                                                           " order by tovar_name,date_expiration";
+                            }
+                            else
+                            {
+                                query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
+                                                                                  " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
+                                                                                  " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
+                                                                                  " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
+                                                                                  " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
+                                                                                  " where dt.guid=@guid AND box=@box" + dop_query +
+                                                                                  " order by dt.line_number";
+                            }
+                        }
+                        else
+                        {
+                            query = "SELECT dt.tovar_code, dt.quantity,dt.quantity_shop,dt.price_buy,dt.price," +
+                                                   " tovar.name AS tovar_name,characteristic.guid AS characteristic_guid," +
+                                                   " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
+                                                   " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
+                                                   " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
+                                                   " where dt.guid=@guid AND box=@box" + dop_query +
+                                                   " order by dt.line_number";
+                        }
+
+                    }
+                    //_guid = new SQLiteParameter("guid", guid);
+                    SQLiteParameter _box = null;
+                    if (num_box != "")
+                    {
+                        _box = new SQLiteParameter("box", num_box);
+                    }
+                    else
+                    {
+                        _box = new SQLiteParameter("box", "0");
+                    }
+
+                        using (command = new SQLiteCommand(query, conn))
+                        {
+                            command.Parameters.Add(_guid);
+                            command.Parameters.Add(_box);
+                            using (SQLiteDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+
+                                    ListViewItem item = new ListViewItem(reader["line_number"].ToString());
+                                    item.SubItems.Add(reader["quantity_shop"].ToString());
+                                    if (display_quantity == 1)
+                                    {
+                                        item.SubItems.Add(reader["quantity"].ToString());
+                                    }
+                                    item.SubItems.Add(reader["tovar_name"].ToString());
+                                    item.SubItems.Add(reader["characteristic_name"].ToString());
+                                    item.SubItems.Add(reader["price_buy"].ToString());
+                                    item.Tag = reader["tovar_code"].ToString();
+                                    if (typ_doc == "5")
+                                    {
+                                        item.SubItems.Add(Convert.ToDateTime(reader["date_expiration"]).ToString("yyyy-MM-dd"));
+                                    }
+                                    listView_stroki.Items.Add(item);
+
+                                    //i++;
+                                }
+                            }
+
+                            if (num_str != 0)
+                            {
+                                if (listView_stroki.Items.Count != 0)
+                                {
+                                    int current_index = 0;
+                                    foreach (ListViewItem item in listView_stroki.Items)
+                                    {
+                                        if (item.SubItems[0].Text == num_str.ToString())
+                                        {
+                                            listView_stroki.EnsureVisible(current_index);
+                                            listView_stroki.Focus();
+                                            listView_stroki.Items[current_index].Selected = true;
+                                            listView_stroki.Items[current_index].Focused = true;
+                                        }
+                                        current_index++;
+                                    }
+                                }
+                            }
+
+                            //удалить строки с одинаковым количеством
+                            //conn.Close();
+                        }
+                    //}
                 }
-            }        
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //    }
+            //    conn.Dispose();
+            //}        
         }
 
 
@@ -828,39 +885,40 @@ namespace TSD
         /// <param name="tovar_code"></param>
         /// <param name="characteristic_name"></param>
         /// <returns></returns>
-        private int find_tovar_in_listView_stroki(string tovar_code, string characteristic_name)
-        {
-            int index = -1;
-            foreach (ListViewItem item in listView_stroki.Items)
-            {
-                if (item.Tag.ToString() == tovar_code)
-                {
-                    index = item.Index;
-                    if (characteristic_name.Trim().Length > 0)
-                    {
-                        if (display_quantity == 1)
-                        {
-                            if (item.SubItems[4].Text.Trim() != characteristic_name.Trim())
-                            {
-                                index = -1;
-                            }
-                        }
-                        else
-                        {
-                            if (item.SubItems[1].Text.Trim() != characteristic_name.Trim())
-                            {
-                                index = -1;
-                            }
-                        }
-                    }
-                    if (index != -1)
-                    {
-                        break;
-                    }
-                }
-            }
-            return index;
-        }
+        //private int find_tovar_in_listView_stroki(string tovar_code, string characteristic_name)
+        //{
+        //    int index = -1;
+        //    foreach (ListViewItem item in listView_stroki.Items)
+        //    {
+        //        if (item.Tag.ToString() == tovar_code)
+        //        {
+        //            index = item.Index;
+        //            if (characteristic_name.Trim().Length > 0)
+        //            {
+        //                if (display_quantity == 1)
+        //                {
+        //                    if (item.SubItems[4].Text.Trim() != characteristic_name.Trim())
+        //                    {
+        //                        index = -1;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (item.SubItems[1].Text.Trim() != characteristic_name.Trim())
+        //                    {
+        //                        index = -1;
+        //                    }
+        //                }
+        //            }
+        //            //if (index != -1)
+        //            //{
+        //            //    break;
+        //            //}
+        //            break;
+        //        }
+        //    }
+        //    return index;
+        //}
 
 
         private void paint_column()
@@ -873,15 +931,39 @@ namespace TSD
 
             if (show_all_stroki)
             {
-                listView_stroki.Columns.Add("Н.с.", 30, HorizontalAlignment.Center);
-                listView_stroki.Columns.Add("Ф", 30, HorizontalAlignment.Right);
+                if (typ_doc != "5")
+                {
+                    listView_stroki.Columns.Add("Н.с.", 30, HorizontalAlignment.Center);
+                    listView_stroki.Columns.Add("Ф", 30, HorizontalAlignment.Right);
+                }
+                else
+                {
+                    listView_stroki.Columns.Add("Н.с.", 3, HorizontalAlignment.Center);
+                    listView_stroki.Columns.Add("Ф", 30, HorizontalAlignment.Right);
+                }
                 if (display_quantity == 1)
                 {
-                    listView_stroki.Columns.Add("П", 30, HorizontalAlignment.Right);
+                    if (typ_doc != "5")
+                    {
+                        listView_stroki.Columns.Add("П", 30, HorizontalAlignment.Right);
+                    }
+                    else
+                    {
+                        listView_stroki.Columns.Add("П", 30, HorizontalAlignment.Right);
+                    }
                 }
                 listView_stroki.Columns.Add("Номенклатура", 200, HorizontalAlignment.Left);
-                listView_stroki.Columns.Add("Характеристика", 200, HorizontalAlignment.Left);
-                listView_stroki.Columns.Add("Ц.пр.", 100, HorizontalAlignment.Right);
+                listView_stroki.Columns.Add("Характеристика", 0, HorizontalAlignment.Left);
+                
+                if (typ_doc == "5")
+                {
+                    listView_stroki.Columns.Add("Ц.пр.", 0, HorizontalAlignment.Right);
+                    listView_stroki.Columns.Add("Годен до:", 80, HorizontalAlignment.Right);                    
+                }
+                else
+                {
+                    listView_stroki.Columns.Add("Ц.пр.", 100, HorizontalAlignment.Right); 
+                }
             }
             else
             {

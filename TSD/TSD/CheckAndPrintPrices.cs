@@ -21,8 +21,10 @@ namespace TSD
         public int its_new = 0;
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private bool verification = true;
-
-
+        //TextBox dayTextBox = new TextBox { Width = 30, Location = new Point(10, 250)};
+        //TextBox monthTextBox = new TextBox { Width = 30, Location = new Point(50, 250)};
+        //TextBox yearTextBox = new TextBox { Width = 50, Location = new Point(90, 250)};
+        
         public CheckAndPrintPrices()
         {
             InitializeComponent();
@@ -31,8 +33,51 @@ namespace TSD
             this.KeyPreview = true;
             timer.Interval = 3000;
             timer.Tick += new EventHandler(timer_Tick);
-
+            set_label_product_expiration_date();            
+            this.Load += new EventHandler(CheckAndPrintPrices_Load);           
         }
+
+        private void CheckAndPrintPrices_Load(object sender, EventArgs e)
+        {
+            if (typ_doc == "5")
+            {
+                btn_enter_date.Visible = true;
+                label_product_expiration_date.Visible = true;
+                if (typ_doc == "5")
+                {
+                    label_ценников.Text = "Товаров";
+                    this.Text = "Сбор сроков номенклатуры";
+                }
+            }
+        }
+
+        private void set_label_product_expiration_date()
+        {
+            label_product_expiration_date.Text = "1900-01-01";
+        }
+
+        //private void InitializeDatePicker()
+        //{
+        //    //TextBox dayTextBox = new TextBox { Width = 30, Location = new Point(10, 10) };
+        //    //TextBox monthTextBox = new TextBox { Width = 30, Location = new Point(50, 10) };
+        //    //TextBox yearTextBox = new TextBox { Width = 50, Location = new Point(90, 10) };
+
+        //    this.Controls.Add(dayTextBox);
+        //    this.Controls.Add(monthTextBox);
+        //    this.Controls.Add(yearTextBox);
+
+        //    Button submitButton = new Button { Text = "OK", Location = new Point(150, 250) };
+        //    submitButton.Click += (sender, e) =>
+        //    {
+        //        int day = int.Parse(dayTextBox.Text);
+        //        int month = int.Parse(monthTextBox.Text);
+        //        int year = int.Parse(yearTextBox.Text);
+        //        DateTime selectedDate = new DateTime(year, month, day);
+        //        MessageBox.Show("Выбрана дата: " + selectedDate.ToShortDateString());
+        //    };
+
+        //    this.Controls.Add(submitButton);
+        //}
 
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -47,7 +92,7 @@ namespace TSD
             if (tovar_code == "")
             {
                 //MessageBox.Show(" Товар не определен ");
-                tovar_not_found();
+                //tovar_not_found();
                 e.Handled = true;
                 txtB_input_barcode.Focus();
                 return;
@@ -64,15 +109,23 @@ namespace TSD
                     else
                     {
                         //поставить проверку на наличие штрихкода в базе 
-                        write_record();
-                        txtB_total_price_tags.Text = get_quantity_shop();
-                        this.txtB_quantity.Text = "";
-                        this.txtB_input_barcode.Text = "";
-                        tovar_code = "";
+                        create_write_or_update_record(true);
+                        //write_record();
+                        //txtB_total_price_tags.Text = get_quantity_shop();
+                        //this.txtB_quantity.Text = "";
+                        //this.txtB_input_barcode.Text = "";
+                        //tovar_code = "";
                         txtB_input_barcode.Focus();
                     }
                 }
-            }   
+            }
+            else if  ((e.KeyChar == 'Z' || e.KeyChar == 'z'))
+            {
+                if (!verification)
+                {
+                    //create_write_or_update_record(true);
+                } 
+            }
         }
 
         private void txtB_input_barcode_KeyPress(object sender, KeyPressEventArgs e)
@@ -84,6 +137,15 @@ namespace TSD
                 {
                     //tovar_not_found();                    
                     return;
+                }
+
+                if (typ_doc == "5")
+                {
+                    if (label_product_expiration_date.Text.Trim() == "1900-01-01")
+                    {
+                        MessageBox.Show(" Вы не указали дату окончания срока годности ");
+                        return;
+                    }
                 }
 
                 find_barcode_or_code_in_tovar(this.txtB_input_barcode.Text.Trim());
@@ -114,14 +176,14 @@ namespace TSD
             {
                 conn.Open();
                 string query = "";
-                //if (barcode.Trim().Length < 8)
-                //{
-                //    query = "SELECT code FROM tovar where code=@barcode"; //LEFT JOIN characteristic 
-                //}
-                //else
-                //{
+                if (barcode.Trim().Length < 8)
+                {
+                    query = "SELECT code AS tovar_code FROM tovar where code=@barcode"; //LEFT JOIN characteristic 
+                }
+                else
+                {
                     query = "SELECT barcodes.tovar_code FROM barcodes where barcodes.barcode_code=@barcode"; //LEFT JOIN characteristic                     
-                //}
+                }
 
                 //SQLiteParameter _barcode = new SQLiteParameter("barcode", SqlDbType.NVarChar);
                 //_barcode.Value = barcode;
@@ -138,12 +200,12 @@ namespace TSD
 
 
                     //Проверка на наличие характеристики
-                    SelectCharacteristic sc = new SelectCharacteristic();
-                    sc.Visible = false;
-                    sc.tovar_code = tovar_code;
-                    sc.ShowDialog();
+                    //SelectCharacteristic sc = new SelectCharacteristic();
+                    //sc.Visible = false;
+                    //sc.tovar_code = tovar_code;
+                    //sc.ShowDialog();
 
-                    characteristic_guid = Program.CharacteristicGuid;
+                    //characteristic_guid = Program.CharacteristicGuid;
 
                     //if (txtB_quantity.Text.Trim().Length == 0)
                     //{
@@ -267,7 +329,7 @@ namespace TSD
             }
         }
 
-        private string get_quantity_shop()
+        public string get_quantity_shop()
         {
             string result = "";
 
@@ -285,8 +347,16 @@ namespace TSD
                 }
                 else
                 {
-                    query = " SELECT SUM(quantity_shop) FROM dt WHERE guid='" + guid + "'" +
-                                            " AND tovar_code=" + tovar_code + " GROUP BY tovar_code ";
+                    if (typ_doc == "5")
+                    {
+                        query = " SELECT SUM(quantity_shop) FROM dt WHERE guid='" + guid + "'" +
+                                                " AND tovar_code=" + tovar_code + " AND date_expiration='" + label_product_expiration_date.Text + "' GROUP BY tovar_code ";
+                    }
+                    else
+                    {
+                        query = " SELECT SUM(quantity_shop) FROM dt WHERE guid='" + guid + "'" +
+                                                                       " AND tovar_code=" + tovar_code + " GROUP BY tovar_code ";
+                    }
                 }
                 SQLiteCommand command = new SQLiteCommand(query, conn);
                 object result_query = command.ExecuteScalar();
@@ -440,10 +510,19 @@ namespace TSD
 
         private void write_record()
         {
-
             //label_количество_в_магазине.Text = " в документе  ";
             //label_количество_в_1с.Text = "";
-
+            // --- ЖЕСТКАЯ ПРОВЕРКА ДАТЫ ДЛЯ ТИПА 5 ---
+            if (typ_doc == "5")
+            {
+                if (label_product_expiration_date.Text.Trim() == "1900-01-01")
+                {
+                    MessageBox.Show(" Сначала выберите дату окончания срока годности! ");
+                    txtB_input_barcode.Focus();
+                    return; // Прерываем выполнение, в базу ничего не запишется
+                }
+            }
+            // -----------------------------------------
             //проверка на отрицательное количество 
             if (txtB_quantity.Text.IndexOf("-") != -1) // вводится отрицательное количество, проверим чтобы не ушло в минус  
             {
@@ -461,20 +540,29 @@ namespace TSD
                 txtB_input_barcode.Focus();
                 return;
             }
-            else if (Convert.ToInt32(txtB_quantity.Text.Trim()) == 0)
+            if (Convert.ToInt32(txtB_quantity.Text.Trim()) == 0)
             {
                 MessageBox.Show(" Количество должно быть больше нуля ");
                 txtB_quantity.Text = "";
                 txtB_input_barcode.Focus();
                 return;
             }
-            else if (tovar_code == "")
+            if (tovar_code == "")
             {
                 //MessageBox.Show(" Товар не определен ");
                 tovar_not_found();
                 txtB_input_barcode.Focus();
                 return;
             }
+            if (typ_doc == "5")
+            {
+                if (label_product_expiration_date.Text.Trim() == "1900-01-01")
+                {
+                    MessageBox.Show(" Вы не указали дату окончания срока годности ");
+                    return;
+                }
+            }
+
 
             SQLiteConnection conn = Program.ConnectForDataBase();
 
@@ -485,11 +573,14 @@ namespace TSD
                 int quantity_shop = Convert.ToInt32(txtB_quantity.Text.Trim());
                 quantity_shop += Convert.ToInt32(get_quantity_shop() == "" ? "0" : get_quantity_shop());
 
-                if (quantity_shop > 9)
+                if (typ_doc == "4")
                 {
-                    MessageBox.Show("Количество ценников не может быть больше 9-ти");
-                    return;
-                }
+                    if (quantity_shop > 9)
+                    {
+                        MessageBox.Show("Количество ценников не может быть больше 9-ти");
+                        return;
+                    }
+                }               
 
                 //перед обновлением по количеству надо понять есть такой товар в документе или нет
                 if (characteristic_guid != "")
@@ -500,8 +591,16 @@ namespace TSD
                 }
                 else
                 {
-                    query = "SELECT line_number FROM dt WHERE guid ='" + guid + "' AND tovar_code=" + tovar_code;
+                    if (typ_doc == "4")
+                    {
+                        query = "SELECT line_number FROM dt WHERE guid ='" + guid + "' AND tovar_code=" + tovar_code;
+                    }
+                    else if (typ_doc == "5")
+                    {
+                        query = "SELECT line_number FROM dt WHERE guid ='" + guid + "' AND tovar_code=" + tovar_code + " AND date_expiration ='" + label_product_expiration_date.Text+"'";
+                    }
                 }
+
                 SQLiteCommand command = new SQLiteCommand(query, conn);
                 object result_query = command.ExecuteScalar();
                 int line_number = -1;
@@ -536,7 +635,7 @@ namespace TSD
                     {
                         //query = " INSERT INTO dt(guid,tovar_code,characteristic,quantity,quantity_shop,price_buy,price,line_number,its_sent)VALUES(@guid,@tovar_code,@characteristic,@quantity,@quantity_shop,@price_buy,@price,@line_number,@its_sent);";
                         //query = " INSERT INTO dt(guid,tovar_code,characteristic,quantity,quantity_shop,price_buy,price)VALUES(@guid,@tovar_code,@characteristic,@quantity,@quantity_shop,@price_buy,@price);";
-                        query = " INSERT INTO dt(guid,tovar_code,characteristic,quantity,quantity_shop,price_buy,price,line_number,its_sent)VALUES('" +
+                        query = " INSERT INTO dt(guid,tovar_code,characteristic,quantity,quantity_shop,price_buy,price,line_number,its_sent,date)VALUES('" +
                         guid + "'," +
                         tovar_code + ",'" +
                         characteristic_guid + "'," +
@@ -545,13 +644,15 @@ namespace TSD
                         "0" + "," +
                         "0" + "," +
                         get_new_line_number() + "," +
-                        "1" + ");";
+                        "1" + ",'"+
+                        label_product_expiration_date.Text.Trim()+"')";
+                        //yearTextBox.Text+"-"+monthTextBox.Text+"-"+dayTextBox.Text+"');";
                     }
                     else
                     {
                         //query = " INSERT INTO dt(guid,tovar_code,quantity,quantity_shop,price_buy,price,line_number,its_sent)VALUES(@guid,@tovar_code,@quantity,@quantity_shop,@price_buy,@price,@line_number,@its_sent);";
                         //query = " INSERT INTO dt(guid,tovar_code,quantity,quantity_shop,price_buy,price)VALUES(@guid,@tovar_code,@quantity,@quantity_shop,@price_buy,@price);";
-                        query = " INSERT INTO dt(guid,tovar_code,quantity,quantity_shop,price_buy,price,line_number,its_sent)VALUES('" +
+                        query = " INSERT INTO dt(guid,tovar_code,quantity,quantity_shop,price_buy,price,line_number,its_sent,date_expiration)VALUES('" +
                         guid + "'," +
                         tovar_code + "," +
                         "0" + "," +
@@ -559,7 +660,8 @@ namespace TSD
                         "0" + "," +
                         "0" + "," +
                         get_new_line_number() + "," +
-                        "1" + ");";
+                        "1" +",'"+
+                        label_product_expiration_date.Text.Trim() + "')";
                     }
 
                     command = new SQLiteCommand(query, conn);
@@ -643,14 +745,16 @@ namespace TSD
             {
                 this.Close();
             }
+
+            label_product_expiration_date.Text = "1900-01-01";
         }
 
         private void tovar_not_found()
         {
-            if (this.its_new == 0)
-            {
+            //if (this.its_new == 0)
+            //{
                 panel_tovar_not_found.Visible = true;
-                panel_tovar_not_found.BringToFront();
+                panel_tovar_not_found.BringToFront();               
                 timer.Enabled = true;
                 txtB_tovar.Text = "";
                 txtB_total_price_tags.Text = "";
@@ -660,7 +764,7 @@ namespace TSD
                 PlaySound ps = new PlaySound();
                 ps.PlaySound_WAV("\\Windows\\exclam.wav");
                 ps.PlaySound_WAV("\\Windows\\exclam.wav");
-            }
+            //}
         }
 
 
@@ -699,21 +803,49 @@ namespace TSD
             return result;
         }
 
+        private void create_write_or_update_record(bool write)
+        {
+            txtB_input_barcode.Focus();
+            if (typ_doc == "4")
+            {
+                if (!write)//Если истина тогда безусловная запись 
+                {
+                    if (verification)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            write_record();
+            //txtB_total_price_tags.Text = get_quantity_shop();
+            txtB_total_price_tags.Text = "";
+            this.txtB_quantity.Text = "";
+            txtB_input_barcode.Text = "";
+            txtB_price_value.Text = "";
+            txtB_tovar.Text = "";
+            tovar_code = "";
+            txtB_input_barcode.Focus();
+        }
+
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             // base.OnKeyDown(e);
             if (e.KeyCode == Keys.Z)
             {
-                txtB_input_barcode.Focus();
-                if (verification)
-                {
-                    return;
-                }
-                write_record();
-                txtB_total_price_tags.Text = get_quantity_shop();
-                txtB_input_barcode.Text = "";
-                txtB_input_barcode.Focus();
+                //txtB_input_barcode.Focus();
+                //if (verification)
+                //{
+                //    return;
+                //}
+                //write_record();
+                //txtB_total_price_tags.Text = get_quantity_shop();
+                //txtB_input_barcode.Text = "";
+                //txtB_input_barcode.Focus();
+
+                create_write_or_update_record(false);
+
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Escape)
@@ -741,6 +873,34 @@ namespace TSD
                 verification = false;
                 this.Text = "Проверка и печать ценников добавление";
             }
-        }        
+        }
+
+        private void btn_enter_date_Click(object sender, EventArgs e)
+        {           
+            //create_write_or_update_record();
+            //EnterExpirationDate enterExpirationDate = new EnterExpirationDate();
+            //DialogResult dr = enterExpirationDate.ShowDialog();
+            //if (dr == DialogResult.OK)
+            //{
+            //    this.label_product_expiration_date.Text = enterExpirationDate.date_expiration;
+            //}
+            //txtB_input_barcode.Focus();
+            //GC.Collect();
+            //// Ожидание завершения всех финализаторов
+            //GC.WaitForPendingFinalizers();
+
+            create_write_or_update_record(true);
+
+            using (EnterExpirationDate enterExpirationDate = new EnterExpirationDate())
+            {
+                DialogResult dr = enterExpirationDate.ShowDialog();
+                if (dr == DialogResult.OK)
+                {
+                    this.label_product_expiration_date.Text = enterExpirationDate.date_expiration;
+                }
+            }
+
+            txtB_input_barcode.Focus();
+        }       
     }
 }

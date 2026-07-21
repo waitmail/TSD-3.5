@@ -117,10 +117,18 @@ namespace TSD
                 this.Controls.Remove(this.txtB_selection_text);
                 this.Controls.Remove(this.btn_selection);
                 this.Controls.Remove(this.label_comment);
-                this.listView_inventory.Location = new System.Drawing.Point(3, 3);
-                //this.listView_inventory.Name = "listView_inventory";
-                this.listView_inventory.Size = new System.Drawing.Size(312, 265);
-                //listView_inventory.
+                this.listView_inventory.Location = new System.Drawing.Point(3, 3);                
+                this.listView_inventory.Size = new System.Drawing.Size(312, 265);                
+            }
+            else if (typ_doc == 5)
+            {
+                this.Text = "  Сбор сроков хранения номенклатуры ";
+                btn_new_document.Visible = true;
+                this.Controls.Remove(this.txtB_selection_text);
+                this.Controls.Remove(this.btn_selection);
+                this.Controls.Remove(this.label_comment);
+                this.listView_inventory.Location = new System.Drawing.Point(3, 3);                
+                this.listView_inventory.Size = new System.Drawing.Size(312, 265);                
             }
 
         }
@@ -164,79 +172,91 @@ namespace TSD
             {
                 this.Text = " Проверка и печать ценников "; 
             }
+            else if (typ_doc == 5)
+            {
+                this.Text = "  Сбор сроков хранения номенклатуры ";
+            }
         }
         
         private void load_documents()
         {
-            SQLiteConnection conn = Program.ConnectForDataBase();
-            listView_inventory.Items.Clear();
-
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string query = "";//
-                if (txtB_selection_text.Text.Trim().Length > 0)
-                {
-                    query = "SELECT  status ,date,guid,info_1s FROM dh where status<3 AND type=" + typ_doc.ToString() + " AND info_1s LIKE '%"+txtB_selection_text.Text.Trim()+"%' order by date ";//
-                }
-                else
-                {
-                    query = "SELECT  status ,date,guid,info_1s FROM dh where status<3 AND type=" + typ_doc.ToString() + " order by date ";//
-                }
-                
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    string _status=reader["status"].ToString();
-                    if (_status == "0")
-                    {
-                        _status = "Н";
-                    }
-                    else if (_status == "1")
-                    {
-                        _status = "Р";
-                    }
-                    else if (_status == "2")
-                    {
-                        _status = "З";
-                    }
-                    else if (_status == "3")
-                    {
-                        _status = "ПЦ";
-                    }
-                    ListViewItem item = new ListViewItem(_status);                    
-                    item.SubItems.Add(reader.GetDateTime(1).ToString("dd.MM.yyyy"));
+                listView_inventory.Items.Clear();
 
-                    int[] boxes_info = calculate_boxes(reader["guid"].ToString());
-                    item.SubItems.Add(boxes_info[0].ToString());
-                    item.SubItems.Add(boxes_info[1].ToString());
-
-                    item.Tag = reader["guid"].ToString();
-                    item.SubItems.Add(reader["info_1s"].ToString());
-                    listView_inventory.Items.Add(item);
-                }
-                if (listView_inventory.Items.Count > 0)
+                try
                 {
-                    listView_inventory.Items[0].Selected = true;
-                    listView_inventory.Items[0].Focused = true;                    
+                    conn.Open();
+                    string query = "";//
+                    if (txtB_selection_text.Text.Trim().Length > 0)
+                    {
+                        query = "SELECT  status ,date,guid,info_1s FROM dh where status<3 AND type=" + typ_doc.ToString() + " AND info_1s LIKE '%" + txtB_selection_text.Text.Trim() + "%' order by date ";//
+                    }
+                    else
+                    {
+                        query = "SELECT  status ,date,guid,info_1s FROM dh where status<3 AND type=" + typ_doc.ToString() + " order by date ";//
+                    }
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string _status = reader["status"].ToString();
+                                if (_status == "0")
+                                {
+                                    _status = "Н";
+                                }
+                                else if (_status == "1")
+                                {
+                                    _status = "Р";
+                                }
+                                else if (_status == "2")
+                                {
+                                    _status = "З";
+                                }
+                                else if (_status == "3")
+                                {
+                                    _status = "ПЦ";
+                                }
+                                ListViewItem item = new ListViewItem(_status);
+                                item.SubItems.Add(reader.GetDateTime(1).ToString("dd.MM.yyyy"));
+
+                                int[] boxes_info = calculate_boxes(reader["guid"].ToString());
+                                item.SubItems.Add(boxes_info[0].ToString());
+                                item.SubItems.Add(boxes_info[1].ToString());
+
+                                item.Tag = reader["guid"].ToString();
+                                item.SubItems.Add(reader["info_1s"].ToString());
+                                listView_inventory.Items.Add(item);
+                            }
+                        }
+                    }
+
+                    if (listView_inventory.Items.Count > 0)
+                    {
+                        listView_inventory.Items[0].Selected = true;
+                        listView_inventory.Items[0].Focused = true;
+                    }
+                }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            } 
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //        conn.Dispose();
+            //    }
+            //} 
         }
 
         /// <summary>
@@ -249,42 +269,46 @@ namespace TSD
         private int[] calculate_boxes(string guid)
         {
             int[] result = new int[2];
-            SQLiteConnection conn = Program.ConnectForDataBase();
-
-            int boxes_total=0;
-            int boxes_in_processing = 0;
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string query = "SELECT box,MAX(box_status) AS box_status FROM dt where guid='" + guid + "' GROUP BY box ";
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+
+                int boxes_total = 0;
+                int boxes_in_processing = 0;
+                try
                 {
-                    boxes_total++;
-                    if (reader["box_status"].ToString() != "")
+                    conn.Open();
+                    string query = "SELECT box,MAX(box_status) AS box_status FROM dt where guid='" + guid + "' GROUP BY box ";
+                    SQLiteCommand command = new SQLiteCommand(query, conn);
+                    using (SQLiteDataReader reader = command.ExecuteReader())
                     {
-                        boxes_in_processing++;
+                        while (reader.Read())
+                        {
+                            boxes_total++;
+                            if (reader["box_status"].ToString() != "")
+                            {
+                                boxes_in_processing++;
+                            }
+                        }
+                        result[0] = boxes_total;
+                        result[1] = boxes_in_processing;
                     }
                 }
-                result[0] = boxes_total;
-                result[1] = boxes_in_processing;
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
+                catch (SQLiteException ex)
                 {
-                    conn.Close();
+                    MessageBox.Show(ex.Message);
                 }
-            } 
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //    }
+            //} 
 
             return result; 
         }
@@ -305,11 +329,13 @@ namespace TSD
             string guid = listView_inventory.Items[listView_inventory.SelectedIndices[0]].Tag.ToString();
             if (guid != "")
             {
-                DocumentList doc = new DocumentList();
-                doc.guid = guid;
-                doc.type = typ_doc.ToString();// listView_inventory.FocusedItem.SubItems[1].Text;
-                doc.its_new = false;
-                doc.ShowDialog();
+                using (DocumentList doc = new DocumentList())
+                {
+                    doc.guid = guid;
+                    doc.typ_doc = typ_doc.ToString();// listView_inventory.FocusedItem.SubItems[1].Text;
+                    doc.its_new = false;
+                    doc.ShowDialog();
+                }
                 listView_inventory.Items.Clear();
                 load_documents();
                 //Позиционирование на ранее выделеном/активном документе
@@ -318,6 +344,7 @@ namespace TSD
                 listView_inventory.EnsureVisible(index);
             }
         }
+
 
         private void btn_select_Click(object sender, EventArgs e)
         {
@@ -329,14 +356,15 @@ namespace TSD
             string guid = listView_inventory.Items[listView_inventory.SelectedIndices[0]].Tag.ToString();
             if (guid != "")
             {
-                DocumentInventory1 d1 = new DocumentInventory1();
-                d1.guid = guid;
-                d1.typ_doc = typ_doc.ToString();// listView_inventory.FocusedItem.SubItems[1].Text;
-                //d1.its_new = false;
-                d1.status = listView_inventory.Items[listView_inventory.SelectedIndices[0]].SubItems[0].Text;
-                d1.info1c = label_comment.Text;
-                
-                d1.ShowDialog();
+                using (DocumentInventory1 d1 = new DocumentInventory1())
+                {
+                    d1.guid = guid;
+                    d1.typ_doc = typ_doc.ToString();// listView_inventory.FocusedItem.SubItems[1].Text;
+                    //d1.its_new = false;
+                    d1.status = listView_inventory.Items[listView_inventory.SelectedIndices[0]].SubItems[0].Text;
+                    d1.info1c = label_comment.Text;
+                    d1.ShowDialog();
+                }
                 listView_inventory.Items.Clear();
                 load_documents();
                 if ((listView_inventory.Items.Count >= index)&&(listView_inventory.Items.Count>0))
@@ -346,29 +374,45 @@ namespace TSD
                     listView_inventory.EnsureVisible(index);
                 }
             }
-
         }
+
 
         private void btn_new_document_Click(object sender, EventArgs e)
         {
-            InputCommentNewDocument inptd = new InputCommentNewDocument();
-            if(inptd.ShowDialog()== DialogResult.Cancel)
+            //using (InputCommentNewDocument inptd = new InputCommentNewDocument())
+            //{
+            //    if (inptd.ShowDialog() == DialogResult.Cancel)
+            //    {
+            //        return;
+            //    }
+            //}
+
+            string new_guid = "";
+            using (DocumentInventory1 doc = new DocumentInventory1())
             {
-                return;
+                string inptd_txtb_description_Text = "";
+
+                using (InputCommentNewDocument inptd = new InputCommentNewDocument())
+                {
+                    if (inptd.ShowDialog() == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                    inptd_txtb_description_Text = inptd.txtb_description.Text; 
+                }
+                new_guid = Guid.NewGuid().ToString();
+                doc.typ_doc = this.typ_doc.ToString();
+                doc.guid = new_guid;
+                doc.its_new = 1;
+                if (!doc.write_new_document(inptd_txtb_description_Text))
+                {
+                    MessageBox.Show(" Не удалось записать новый документ ");
+                    return;
+                }
+
+                doc.ShowDialog();
             }
-            DocumentInventory1 doc = new DocumentInventory1();            
-            string new_guid = Guid.NewGuid().ToString();
-            doc.typ_doc = this.typ_doc.ToString();
-            doc.guid = new_guid;
-            doc.its_new = 1;
-            if (!doc.write_new_document(inptd.txtb_description.Text))
-            {
-                MessageBox.Show(" Не удалось записать новый документ ");
-                return;
-            }  
             
-            doc.ShowDialog();
-            doc.Dispose();
             listView_inventory.Items.Clear();
             load_documents();
             //позиционирование на новой позиции
@@ -394,6 +438,11 @@ namespace TSD
         private void btn_selection_Click(object sender, EventArgs e)
         {
             load_documents();
+        }
+
+        private void btn_shelf_life_Click(object sender, EventArgs e)
+        {
+
         }       
     }
 }

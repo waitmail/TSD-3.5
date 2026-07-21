@@ -76,7 +76,7 @@
             this.btn_upload_logs.Size = new System.Drawing.Size(75, 40);
             this.btn_upload_logs.TabIndex = 9;
             this.btn_upload_logs.Text = "Логи";
-            this.btn_upload_logs.Click += new System.EventHandler(this.btn_upload_logs_Click);
+            this.btn_upload_logs.Visible = false;           
             // 
             // ChageData
             // 

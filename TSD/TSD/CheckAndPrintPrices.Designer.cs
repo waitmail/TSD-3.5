@@ -17,6 +17,14 @@
             {
                 components.Dispose();
             }
+            if (this.timer != null)
+            {                
+                this.timer.Tick -= timer_Tick; // Отключаем обработчик события
+                this.timer.Dispose(); // Освобождаем ресурсы таймера
+            }            
+            this.txtB_input_barcode.KeyPress -= txtB_input_barcode_KeyPress;
+            this.txtB_quantity.KeyPress -= txtB_quantity_KeyPress;                        
+            this.Load -= CheckAndPrintPrices_Load;            
             base.Dispose(disposing);
         }
 
@@ -39,6 +47,8 @@
             this.panel_tovar_not_found = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.btn_enter_date = new System.Windows.Forms.Button();
+            this.label_product_expiration_date = new System.Windows.Forms.Label();
             this.panel_tovar_not_found.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,10 +94,11 @@
             // 
             // txtB_quantity
             // 
+            this.txtB_quantity.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular);
             this.txtB_quantity.Location = new System.Drawing.Point(92, 192);
             this.txtB_quantity.MaxLength = 2;
             this.txtB_quantity.Name = "txtB_quantity";
-            this.txtB_quantity.Size = new System.Drawing.Size(42, 23);
+            this.txtB_quantity.Size = new System.Drawing.Size(42, 29);
             this.txtB_quantity.TabIndex = 12;
             // 
             // txtB_input_barcode
@@ -109,10 +120,11 @@
             // txtB_total_price_tags
             // 
             this.txtB_total_price_tags.Enabled = false;
+            this.txtB_total_price_tags.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular);
             this.txtB_total_price_tags.Location = new System.Drawing.Point(202, 192);
             this.txtB_total_price_tags.MaxLength = 1;
             this.txtB_total_price_tags.Name = "txtB_total_price_tags";
-            this.txtB_total_price_tags.Size = new System.Drawing.Size(42, 23);
+            this.txtB_total_price_tags.Size = new System.Drawing.Size(42, 29);
             this.txtB_total_price_tags.TabIndex = 17;
             // 
             // panel_tovar_not_found
@@ -145,6 +157,29 @@
             this.label3.Text = "ТОВАР";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // btn_enter_date
+            // 
+            this.btn_enter_date.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
+            this.btn_enter_date.Location = new System.Drawing.Point(4, 257);
+            this.btn_enter_date.Name = "btn_enter_date";
+            this.btn_enter_date.Size = new System.Drawing.Size(148, 35);
+            this.btn_enter_date.TabIndex = 22;
+            this.btn_enter_date.Text = "Следующий срок";
+            this.btn_enter_date.Visible = false;
+            this.btn_enter_date.Click += new System.EventHandler(this.btn_enter_date_Click);
+            // 
+            // label_product_expiration_date
+            // 
+            this.label_product_expiration_date.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_product_expiration_date.Font = new System.Drawing.Font("Tahoma", 20F, System.Drawing.FontStyle.Regular);
+            this.label_product_expiration_date.Location = new System.Drawing.Point(153, 257);
+            this.label_product_expiration_date.Name = "label_product_expiration_date";
+            this.label_product_expiration_date.Size = new System.Drawing.Size(156, 35);
+            this.label_product_expiration_date.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label_product_expiration_date.Visible = false;
+            // 
             // CheckAndPrintPrices
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -152,6 +187,8 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
+            this.Controls.Add(this.label_product_expiration_date);
+            this.Controls.Add(this.btn_enter_date);
             this.Controls.Add(this.txtB_total_price_tags);
             this.Controls.Add(this.label_всего);
             this.Controls.Add(this.label_шк);
@@ -162,7 +199,7 @@
             this.Controls.Add(this.txtB_tovar);
             this.Controls.Add(this.panel_tovar_not_found);
             this.Name = "CheckAndPrintPrices";
-            this.Text = "Проверка и печать ценников проверка";
+            this.Text = "Проверка и печать ценников";
             this.TopMost = true;
             this.panel_tovar_not_found.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -182,5 +219,7 @@
         private System.Windows.Forms.Panel panel_tovar_not_found;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btn_enter_date;
+        public System.Windows.Forms.Label label_product_expiration_date;
     }
 }

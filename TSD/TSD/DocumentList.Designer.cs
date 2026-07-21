@@ -13,9 +13,19 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+
+                // Отписка от событий
+                this.Load -= Document_Load;
+                this.txtB_inputbarcode.KeyPress -= txtB_inputbarcode_KeyPress;
+                this.txtB_status.KeyDown -= txtB_status_KeyDown;
+                this.listView_stroki.SelectedIndexChanged -= listView_stroki_SelectedIndexChanged;
+                this.listView_stroki.KeyDown -= listView_stroki_KeyDown;
             }
             base.Dispose(disposing);
         }
@@ -88,7 +98,6 @@
             this.label_price.Location = new System.Drawing.Point(5, 179);
             this.label_price.Name = "label_price";
             this.label_price.Size = new System.Drawing.Size(100, 20);
-            this.label_price.Text = "label1";
             // 
             // label_selected_quantity_1c
             // 
@@ -104,7 +113,6 @@
             this.label_description_tovar.Location = new System.Drawing.Point(5, 200);
             this.label_description_tovar.Name = "label_description_tovar";
             this.label_description_tovar.Size = new System.Drawing.Size(306, 66);
-            this.label_description_tovar.Text = "label1";
             // 
             // label_selected_quantity_shop
             // 

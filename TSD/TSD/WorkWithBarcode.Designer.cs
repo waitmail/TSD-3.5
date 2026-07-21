@@ -13,9 +13,25 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+
+                // Отписка от событий
+                this.txtB_input_barcode.KeyPress -= txtB_input_barcode_KeyPress;
+                this.txtB_quantity.KeyPress -= txtB_quantity_KeyPress;
+                this.Load -= WorkWithBarcode_Load;
+                this.Paint -= WorkWithBarcode_Paint;
+
+                // Остановка таймера
+                if (timer != null)
+                {
+                    timer.Enabled=false;
+                    timer.Dispose();
+                }
             }
             base.Dispose(disposing);
         }

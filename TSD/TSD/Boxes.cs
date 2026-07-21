@@ -19,6 +19,7 @@ namespace TSD
         public string status = "";
         public string info1c = "";
         private bool show_all_stroki = true;
+        private Dictionary<string, int> index_items = new Dictionary<string, int>();
 
         
         public Boxes()
@@ -27,8 +28,9 @@ namespace TSD
             this.KeyPreview = true;
             this.Load += new EventHandler(Boxes_Load);
             this.txtB_input_barcode.KeyDown += new KeyEventHandler(txtB_input_barcode_KeyDown);
+            //Program.write_log("Start Boxes");
 
-        }
+        }      
 
         private void txtB_input_barcode_KeyDown(object sender, KeyEventArgs e)
         {
@@ -40,26 +42,39 @@ namespace TSD
                 //}
                 txtB_input_barcode.Text = transform(txtB_input_barcode.Text);
                 listView_boxes.Focus();
+                int index = 0;
+                //int find = 0; int index = 0;
+                //if (txtB_input_barcode.Text.Trim().Length != 0)
+                //{
+                //    foreach (ListViewItem item in listView_boxes.Items)
+                //    {
+                //        if (item.SubItems[3].Text.Trim() == txtB_input_barcode.Text)
+                //        {
+                //            find = 1;
+                //            listView_boxes.Items[index].Selected = true;
+                //            listView_boxes.Items[index].Focused = true;
+                //            listView_boxes.EnsureVisible(index);
+                //        }
+                //        index++;
+                //    }
+                //}
 
-                int find = 0; int index = 0;
-                if (txtB_input_barcode.Text.Trim().Length != 0)
+                try
                 {
-                    foreach (ListViewItem item in listView_boxes.Items)
-                    {
-                        if (item.SubItems[3].Text.Trim() == txtB_input_barcode.Text)
-                        {
-                            find = 1;
-                            listView_boxes.Items[index].Selected = true;
-                            listView_boxes.Items[index].Focused = true;
-                            listView_boxes.EnsureVisible(index);
-                        }
-                        index++;
-                    }
+                    index = index_items[txtB_input_barcode.Text.Trim()];
+                    listView_boxes.Items[index].Selected = true;
+                    listView_boxes.Items[index].Focused = true;
+                    listView_boxes.EnsureVisible(index);                    
                 }
-                if (find == 0)
+                catch (KeyNotFoundException)
                 {
                     MessageBox.Show("Не найдена");
                 }
+
+                //if (find == 0)
+                //{
+                //    MessageBox.Show("Не найдена");
+                //}
                 e.Handled = true;
             }
             else
@@ -167,8 +182,8 @@ namespace TSD
                         //listView_boxes.Items[index].Focused = true;
                     }
                     load_boxes(index);
-
                 }
+                sb.Dispose();
             }
             //else if (e.KeyCode == Keys.D1)
             //{                
@@ -232,84 +247,120 @@ namespace TSD
             if (!show_all_stroki)
             {
                 this.Text += "  Расхождения ";//"  расхождения ) верх. кнопки ";
-                dop_query = " WHERE dt_box .quantity <> dt_box .quantity_shop ";
+                dop_query = " WHERE dt_box.quantity <> dt_box.quantity_shop ";
             }
             else
             {
                 this.Text = "Коробки";
             }
-            
 
-            SQLiteConnection conn = Program.ConnectForDataBase();
 
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                //string query = " SELECT SUM(quantity) AS quantity,SUM(quantity_shop) AS quantity_shop,box,MAX(box_status) AS box_status FROM dt WHERE guid='" + guid + "'" + dop_query + " GROUP BY box";
-                string query = " SELECT * FROM (SELECT SUM(quantity) AS quantity,SUM(quantity_shop) AS quantity_shop,box,MAX(box_status) AS box_status FROM dt WHERE guid='" + guid + "' GROUP BY box) AS dt_box "+ dop_query;
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+
+                try
                 {
-                    ListViewItem item = new ListViewItem(reader["box_status"].ToString());
-                    item.SubItems.Add(reader["quantity_shop"].ToString());
-                    item.SubItems.Add(reader["quantity"].ToString());                    
-                    //item.SubItems.Add("");
-                    item.SubItems.Add(reader["box"].ToString());                    
-                    listView_boxes.Items.Add(item);
-                }
-                reader.Close();
-                command.Dispose();
-                conn.Close();
-                listView_boxes.Focus();
-                listView_boxes.Items[index].Selected = true;
-                listView_boxes.Items[index].Focused = true;
-                listView_boxes.EnsureVisible(index);
-                txtB_info_on_doc.Text = status + " " + listView_boxes.Items[index].SubItems[1].Text + " из " + listView_boxes.Items[index].SubItems[2].Text + ". " + info1c;
+                    conn.Open();
+                    //string query = " SELECT SUM(quantity) AS quantity,SUM(quantity_shop) AS quantity_shop,box,MAX(box_status) AS box_status FROM dt WHERE guid='" + guid + "'" + dop_query + " GROUP BY box";
+                    string query = " SELECT * FROM (SELECT SUM(quantity) AS quantity,SUM(quantity_shop) AS quantity_shop,box,MAX(box_status) AS box_status FROM dt WHERE guid='" + guid + "' GROUP BY box) AS dt_box " + dop_query;
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            int index_listviw_item = 0; index_items.Clear();
+                            while (reader.Read())
+                            {
+                                ListViewItem item = new ListViewItem(reader["box_status"].ToString());
+                                item.SubItems.Add(reader["quantity_shop"].ToString());
+                                item.SubItems.Add(reader["quantity"].ToString());
+                                //item.SubItems.Add("");
+                                item.SubItems.Add(reader["box"].ToString());
+                                listView_boxes.Items.Add(item);
 
-            }
-            catch (SQLiteException ex)
-            {
-            //    MessageBox.Show(ex.Message);
-            //    //result = false;
-            }
-            catch (Exception ex)
-            {
-            //    MessageBox.Show(ex.Message);
-            //    //result = false;
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
+                                index_items.Add(reader["box"].ToString(), index_listviw_item);
+                                index_listviw_item++;
+                            }
+                            //reader.Close();
+                            //command.Dispose();
+                            //conn.Close();
+                            listView_boxes.Focus();
+                            if (listView_boxes.Items.Count > 0)
+                            {
+                                listView_boxes.Items[index].Selected = true;
+                                listView_boxes.Items[index].Focused = true;
+                                listView_boxes.EnsureVisible(index);
+                            }
+                            if ((this.its_new > 0) && (listView_boxes.Items.Count == 0))
+                            {
+                                ListViewItem item = new ListViewItem("1");//
+                                item.SubItems.Add("0");
+                                item.SubItems.Add("0");
+                                item.SubItems.Add("Самопал");
+                                listView_boxes.Items.Add(item);
+                                index_items.Add("Самопал", 0);
+                            }
+                            txtB_info_on_doc.Text = status + " " + listView_boxes.Items[index].SubItems[1].Text + " из " + listView_boxes.Items[index].SubItems[2].Text + ". " + info1c;
+                        }
+                    }
+
                 }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message, "load_boxes");
+                    //result = false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "load_boxes");
+                    //result = false;
+                }            
             }
-        }
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //    }
+            //    conn.Dispose();
+            //}           
+        }        
         
         private void btn_acceptance_Click(object sender, EventArgs e)
         {
-            WorkWithBarcode wb = new WorkWithBarcode();
-            if (its_new == 0)
+            using (WorkWithBarcode wb = new WorkWithBarcode())
             {
-                wb.num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
-            }
-            else
-            {
-                wb.num_box = "0";
-            }
-            wb.guid = guid;
-            wb.typ_doc = this.typ_doc;
-            wb.its_new = this.its_new;
-            if (listView_boxes.Items.Count > 0)
-            {
-                if (listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[0].Text == "б")
+                if (its_new == 0)
                 {
-                    delete_status();
+                    wb.num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
                 }
+                else
+                {
+                    wb.num_box = "0";
+                }
+                wb.guid = guid;
+                wb.typ_doc = this.typ_doc;
+                wb.its_new = this.its_new;
+                if (listView_boxes.Items.Count > 0)
+                {
+                    if (listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[0].Text == "б")
+                    {
+                        delete_status();
+                    }
+                }               
+                wb.ShowDialog();
             }
-            wb.ShowDialog();
-            wb.Dispose();
+
+            this.TopMost = true;
+            this.Activate();
+            this.Refresh();
+
+            //wb.Dispose();
+            //wb = null;
+            //Program.write_log("Close WorkWithBarcode");
+            //GC.Collect();
+            //GC.SuppressFinalize(wb);
+            //GC.WaitForPendingFinalizers();
+            //wb = null;
             if (listView_boxes.Items.Count == 0)
             {
                 load_boxes(0);
@@ -326,33 +377,61 @@ namespace TSD
             //}           
         }
 
+        //private void delete_status()
+        //{
+        //    SQLiteConnection conn = Program.ConnectForDataBase();
+
+        //    try
+        //    {
+        //        conn.Open();
+        //        string num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
+        //        string query = " UPDATE dt SET box_status='',quantity_shop=0  WHERE guid='" + guid + "' AND box ='" + num_box.Trim() + "'";
+        //        SQLiteCommand command = new SQLiteCommand(query, conn);
+        //        command.ExecuteNonQuery();
+        //        command.Dispose();
+        //        conn.Close();
+        //    }
+        //    catch (SQLiteException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //        conn.Dispose();
+        //    }
+        //}
+
         private void delete_status()
         {
-            SQLiteConnection conn = Program.ConnectForDataBase();
-
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
-                string query = " UPDATE dt SET box_status='',quantity_shop=0  WHERE guid='" + guid + "' AND box ='" + num_box.Trim() + "'";
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                command.ExecuteNonQuery();
-                command.Dispose();
-                conn.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
+                try
                 {
-                    conn.Close();
+                    conn.Open();
+                    string num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
+                    string query = "UPDATE dt SET box_status='', quantity_shop=0 WHERE guid=@guid AND box=@box";
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("@guid", guid);
+                        command.Parameters.AddWithValue("@box", num_box.Trim());
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
         }
@@ -366,47 +445,40 @@ namespace TSD
                 return;
             }
 
-            SQLiteConnection conn = Program.ConnectForDataBase();
-
-            try
+            using (SQLiteConnection conn = Program.ConnectForDataBase())
             {
-                conn.Open();
-                string num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
-                string query = " UPDATE dt SET box_status='б',quantity_shop=quantity  WHERE guid='" + guid + "' AND box ='" + num_box.Trim() + "'";
-                SQLiteCommand command = new SQLiteCommand(query, conn);
-                command.ExecuteNonQuery();
-                command.Dispose();
-                conn.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
+                try
                 {
-                    conn.Close();
+                    conn.Open();
+                    string num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
+                    string query = " UPDATE dt SET box_status='б',quantity_shop=quantity  WHERE guid='" + guid + "' AND box ='" + num_box.Trim() + "'";
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        command.ExecuteNonQuery();
+                    }                    
                 }
-            }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }            
         }
-
+       
         private void btn_show_divergence_Click(object sender, EventArgs e)
         {
-            DocumentList doc = new DocumentList();
-            doc.guid = guid;
-            doc.num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;
-            //
-            //doc.label_decription_document = this.label_decription_document.Text;
-            doc.its_new = false;
-            doc.type = this.typ_doc;
-            doc.TopMost = true;
-            doc.ShowDialog();
-            doc.Dispose();
+            using (DocumentList doc = new DocumentList())
+            {
+                doc.guid = guid;
+                doc.num_box = listView_boxes.Items[listView_boxes.SelectedIndices[0]].SubItems[3].Text;                
+                doc.its_new = false;
+                doc.typ_doc = this.typ_doc;
+                doc.TopMost = true;
+                doc.ShowDialog();            
+            }           
         }   
     }
 }
