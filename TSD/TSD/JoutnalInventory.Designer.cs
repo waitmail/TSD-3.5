@@ -53,7 +53,7 @@
             // 
             this.btn_new_document.Location = new System.Drawing.Point(4, 270);
             this.btn_new_document.Name = "btn_new_document";
-            this.btn_new_document.Size = new System.Drawing.Size(310, 22);
+            this.btn_new_document.Size = new System.Drawing.Size(74, 22);
             this.btn_new_document.TabIndex = 1;
             this.btn_new_document.Text = "Новый";
             this.btn_new_document.Visible = false;
