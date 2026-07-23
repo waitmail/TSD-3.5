@@ -221,6 +221,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetStarterTSD">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="guid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="num_base" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStarterTSDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetStarterTSDResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="HelloWorldSoapIn">
@@ -307,6 +323,12 @@
   <wsdl:message name="GetDllSoapOut">
     <wsdl:part name="parameters" element="tns:GetDllResponse" />
   </wsdl:message>
+  <wsdl:message name="GetStarterTSDSoapIn">
+    <wsdl:part name="parameters" element="tns:GetStarterTSD" />
+  </wsdl:message>
+  <wsdl:message name="GetStarterTSDSoapOut">
+    <wsdl:part name="parameters" element="tns:GetStarterTSDResponse" />
+  </wsdl:message>
   <wsdl:portType name="WSSoap">
     <wsdl:operation name="HelloWorld">
       <wsdl:input message="tns:HelloWorldSoapIn" />
@@ -363,6 +385,10 @@
     <wsdl:operation name="GetDll">
       <wsdl:input message="tns:GetDllSoapIn" />
       <wsdl:output message="tns:GetDllSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStarterTSD">
+      <wsdl:input message="tns:GetStarterTSDSoapIn" />
+      <wsdl:output message="tns:GetStarterTSDSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WSSoap" type="tns:WSSoap">
@@ -493,6 +519,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetStarterTSD">
+      <soap:operation soapAction="http://tempuri.org/GetStarterTSD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="WSSoap12" type="tns:WSSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -615,6 +650,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetDll">
       <soap12:operation soapAction="http://tempuri.org/GetDll" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStarterTSD">
+      <soap12:operation soapAction="http://tempuri.org/GetStarterTSD" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

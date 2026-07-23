@@ -37,6 +37,7 @@
             this.btn_get_new_program = new System.Windows.Forms.Button();
             this.lbl_have_new_version = new System.Windows.Forms.Label();
             this.btn_get_dll = new System.Windows.Forms.Button();
+            this.btn_get_starter = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cmb_bases
@@ -116,10 +117,20 @@
             this.btn_get_dll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
             this.btn_get_dll.Location = new System.Drawing.Point(5, 219);
             this.btn_get_dll.Name = "btn_get_dll";
-            this.btn_get_dll.Size = new System.Drawing.Size(308, 34);
+            this.btn_get_dll.Size = new System.Drawing.Size(153, 34);
             this.btn_get_dll.TabIndex = 9;
             this.btn_get_dll.Text = "(3) Загрузить Dll";
             this.btn_get_dll.Click += new System.EventHandler(this.btn_get_dll_Click);
+            // 
+            // btn_get_starter
+            // 
+            this.btn_get_starter.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
+            this.btn_get_starter.Location = new System.Drawing.Point(164, 222);
+            this.btn_get_starter.Name = "btn_get_starter";
+            this.btn_get_starter.Size = new System.Drawing.Size(150, 31);
+            this.btn_get_starter.TabIndex = 14;
+            this.btn_get_starter.Text = "Загрузить стартер";
+            this.btn_get_starter.Click += new System.EventHandler(this.btn_get_starter_Click);
             // 
             // Setting
             // 
@@ -128,6 +139,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
+            this.Controls.Add(this.btn_get_starter);
             this.Controls.Add(this.btn_get_dll);
             this.Controls.Add(this.lbl_have_new_version);
             this.Controls.Add(this.btn_get_new_program);
@@ -157,5 +169,6 @@
         private System.Windows.Forms.Button btn_get_new_program;
         private System.Windows.Forms.Label lbl_have_new_version;
         private System.Windows.Forms.Button btn_get_dll;
+        private System.Windows.Forms.Button btn_get_starter;
     }
 }

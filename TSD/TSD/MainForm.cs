@@ -148,6 +148,38 @@ namespace TSD
         //    }
         }
 
+        private void CheckShopCodeAndSetButtons()
+        {
+            string shop = Program.get_code_shop();
+            string device_id = Program.get_device_id();
+
+            if (string.IsNullOrEmpty(shop))
+            {
+                // Если кода магазина нет
+                this.Text = "Код магазина не задан! " + device_id;
+
+                // Отключаем все кнопки, кроме Настроек и Синхронизации
+                btn_inventory.Enabled = false;
+                btn_view_tovar.Enabled = false;
+                btn_check_price.Enabled = false;
+                btn_goods_receipt.Enabled = false;
+                btn_customer_order.Enabled = false;
+                button2.Enabled = false;
+            }
+            else
+            {
+                // Если код магазина есть, включаем все кнопки
+                this.Text = shop + " " + device_id + " 08.10.2017";
+
+                btn_inventory.Enabled = true;
+                btn_view_tovar.Enabled = true;
+                btn_check_price.Enabled = true;
+                btn_goods_receipt.Enabled = true;
+                btn_customer_order.Enabled = true;
+                button2.Enabled = true;
+            }
+        }
+
         private void clear_status_its_sent(StringBuilder after_sending)
         {
             SQLiteConnection conn = Program.ConnectForDataBase();
@@ -194,6 +226,7 @@ namespace TSD
             timer_backup_data.Enabled = true;
             timer_backup_data.Tick += new EventHandler(timer_backup_data_Tick);
             get_zagolovok();
+            CheckShopCodeAndSetButtons(); 
             //Program.UploadLogs();
         }
 

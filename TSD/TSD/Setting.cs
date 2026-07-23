@@ -369,34 +369,23 @@ namespace TSD
 
         private void btn_get_dll_Click(object sender, EventArgs e)
         {
-            
-            string startup_folder_path = Program.get_startup_folder_path();          
-
-            TSD.WS.WS ws = new TSD.WS.WS();
-            string device_id = Program.get_device_id();
-            string key = device_id + CryptorEngine.get_count_day_tsd();
-            string web_query = CryptorEngine.Encrypt(Program.get_device_id() + "|" + Program.get_device_id(), true, key);
-            byte[] answer = ws.GetDll(Program.get_device_id(), web_query, Program.GetDbId());
-            if (answer.Length > 1000)
+            // Вызываем общий метод с показом сообщений
+            if (Program.DownloadJsonDll(true))
             {
-                using (FileStream fs = File.OpenWrite(startup_folder_path + "Newtonsoft.Json.Compact.dll"))
-                {
-                    fs.Write(answer, 0, answer.Length);
-                }
-                MessageBox.Show("Dll успешно получена, необходимо перезапустить программу");
+                // Если успешно скачалось, закрываем форму
                 this.DialogResult = DialogResult.Cancel;
-                this.Close();                
+                this.Close();
             }
-            else
+        }
+
+        private void btn_get_starter_Click(object sender, EventArgs e)
+        {
+            // Вызываем общий метод с показом сообщений
+            if (Program.DownloadStarter(true))
             {
-                if (UTF8Encoding.UTF8.GetString(answer, 0, answer.Count()) == "1000")
-                {
-                    MessageBox.Show("Этот тсд еще не зарегистрирован ");
-                }
-                else
-                {
-                    MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
-                }
+                // Если успешно скачалось, закрываем форму
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
         }
     }

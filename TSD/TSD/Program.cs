@@ -14,27 +14,136 @@ namespace TSD
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        ///// <summary>
+        ///// The main entry point for the application.
+        ///// </summary>
+        //[MTAThread]
+        //static void Main()
+        //{
+
+        //    if (!BaseExist)
+        //    {
+        //        Program.CreateDataBase();
+        //        Program.write_setting(1);
+        //    }
+        //    //BackupDatabases();
+        //    AddColumnDateExpiration();
+        //    if (File.Exists(Program.get_startup_folder_path() + "old_TSD.exe"))
+        //    {
+        //        File.Delete(Program.get_startup_folder_path() + "old_TSD.exe");
+        //    }
+        //    //CheckAndDownloadStarter(); 
+        //    string starterPath = Program.get_startup_folder_path() + "StarterTSD.exe";
+        //    if (!File.Exists(starterPath))
+        //    {
+        //        Program.DownloadStarter(true); // false = тихий режим
+        //    }
+        //    string dllPath = Program.get_startup_folder_path() + "Newtonsoft.Json.Compact.dll";
+        //    if (!File.Exists(dllPath))
+        //    {
+        //        Program.DownloadJsonDll(true);
+        //    }
+
+        //    Application.Run(new MainForm());
+        //}
+
+        ///// <summary>
+        ///// The main entry point for the application.
+        ///// </summary>
         [MTAThread]
         static void Main()
         {
+            // 1. ПРОВЕРЯЕМ БАЗУ ДАННЫХ (переименование старой и конфликт файлов)
+            if (!MigrateDatabaseName())
+            {
+                return; // Прерываем запуск, если обнаружено два файла базы
+            }
 
+            // 2. ПРОВЕРЯЕМ СУЩЕСТВОВАНИЕ БАЗЫ (с новым именем)
             if (!BaseExist)
             {
                 Program.CreateDataBase();
                 Program.write_setting(1);
             }
-            //BackupDatabases();
             AddColumnDateExpiration();
+
+            // 3. УДАЛЯЕМ СТАРЫЙ EXE ФАЙЛ, ЕСЛИ ОН ОСТАЛСЯ ПОСЛЕ ОБНОВЛЕНИЯ
             if (File.Exists(Program.get_startup_folder_path() + "old_TSD.exe"))
             {
                 File.Delete(Program.get_startup_folder_path() + "old_TSD.exe");
             }
+
+            // 4. ПРОВЕРКА И СКАЧИВАНИЕ НЕДОСТАЮЩИХ ФАЙЛОВ (Starter и DLL)
+            bool need_restart = false; // Флаг: нужно ли перезапускать программу
+
+            string starterPath = Program.get_startup_folder_path() + "StarterTSD.exe";
+            if (!File.Exists(starterPath))
+            {
+                if (Program.DownloadStarter(false))
+                {
+                    need_restart = true;
+                }
+            }
+
+            string dllPath = Program.get_startup_folder_path() + "Newtonsoft.Json.Compact.dll";
+            if (!File.Exists(dllPath))
+            {
+                if (Program.DownloadJsonDll(false))
+                {
+                    need_restart = true;
+                }
+            }
+
+            // Если хотя бы один файл скачался, выходим, чтобы пользователь перезапустил программу
+            if (need_restart)
+            {
+                MessageBox.Show("Скачаны недостающие файлы. Перезапустите программу.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
+                return; // Прерываем выполнение Main, MainForm не откроется
+            }
+
+            // 5. ЗАПУСК ГЛАВНОЙ ФОРМЫ
             Application.Run(new MainForm());
         }
 
+        /// <summary>
+        /// Проверяет наличие базы данных. Если новой БД нет, но есть старая (TSD.db), переименовывает её.
+        /// </summary>
+        /// <summary>
+        /// Проверяет наличие базы данных. 
+        /// Возвращает true, если можно продолжать работу. 
+        /// Возвращает false, если есть конфликт (два файла) или ошибка.
+        /// </summary>
+        private static bool MigrateDatabaseName()
+        {
+            string newDbPath = PathForBases; // "\\Application\\TSD_database.db"
+            string oldDbPath = "\\Application\\TSD.db"; // Старое имя
+
+            try
+            {
+                // Если старый файл существует, с ним нужно что-то сделать
+                if (File.Exists(oldDbPath))
+                {
+                    // Проверяем, существует ли уже файл с новым именем
+                    if (File.Exists(newDbPath))
+                    {
+                        // КОНФЛИКТ: Оба файла на месте. Ничего не удаляем, просим пользователя разобраться.
+                        MessageBox.Show("Обнаружено два файла базы данных (TSD.db и TSD_database.db). Удалите лишний файл и запустите программу снова.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        return false; // Прерываем запуск
+                    }
+                    else
+                    {
+                        // Конфликта нет, просто переименовываем старую базу в новую
+                        File.Move(oldDbPath, newDbPath);
+                    }
+                }
+                return true; // Все хорошо, можно работать
+            }
+            catch (Exception)
+            {
+                // Если что-то пошло не так, тоже останавливаем запуск, чтобы не навредить
+                return false;
+            }
+        }
 
 
         //private static string pathForBases;
@@ -49,6 +158,132 @@ namespace TSD
         //private static string codeBase;
         //private static string guid = null;
 
+
+        public static bool DownloadJsonDll(bool showMessages)
+        {
+            string dllPath = Program.get_startup_folder_path() + "Newtonsoft.Json.Compact.dll";
+
+            try
+            {
+                using (TSD.WS.WS ws = new TSD.WS.WS())
+                {
+                    // Если запускаем по кнопке, таймаут длинный. Если при старте - короткий (15 сек).
+                    ws.Timeout = showMessages ? 12000000 : 15000;
+
+                    string device_id = Program.get_device_id();
+                    string key = device_id + CryptorEngine.get_count_day_tsd();
+                    string web_query = CryptorEngine.Encrypt(device_id + "|" + device_id, true, key);
+
+                    byte[] answer = ws.GetDll(device_id, web_query, Program.GetDbId());
+
+                    if (answer.Length > 1000)
+                    {
+                        using (FileStream fs = File.OpenWrite(dllPath))
+                        {
+                            fs.Write(answer, 0, answer.Length);
+                        }
+
+                        if (showMessages)
+                        {
+                            MessageBox.Show("Dll успешно получена, необходимо перезапустить программу");
+                        }
+                        return true; // Успех
+                    }
+                    else
+                    {
+                        // В CF используем Length вместо Count()
+                        string response = UTF8Encoding.UTF8.GetString(answer, 0, answer.Length);
+
+                        if (showMessages)
+                        {
+                            if (response == "1000")
+                            {
+                                MessageBox.Show("Этот тсд еще не зарегистрирован ");
+                            }
+                            else
+                            {
+                                MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
+                            }
+                        }
+                        return false; // Ошибка
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (showMessages)
+                {
+                    MessageBox.Show("Ошибка сети: " + ex.Message);
+                }
+                return false; // Ошибка
+            }
+        }
+
+        public static bool DownloadStarter(bool showMessages)
+        {
+            string starterPath = Program.get_startup_folder_path() + "StarterTSD.exe";
+
+            try
+            {
+                using (TSD.WS.WS ws = new TSD.WS.WS())
+                {
+                    // Если запускаем по кнопке, таймаут длинный. Если при старте - короткий (15 сек).
+                    ws.Timeout = showMessages ? 12000000 : 15000;
+
+                    string device_id = Program.get_device_id();
+                    string key = device_id + CryptorEngine.get_count_day_tsd();
+                    string web_query = CryptorEngine.Encrypt(device_id + "|" + device_id, true, key);
+
+                    byte[] answer = ws.GetStarterTSD(device_id, web_query, Program.GetDbId());
+
+                    if (answer.Length > 1000)
+                    {
+                        using (FileStream fs = File.OpenWrite(starterPath))
+                        {
+                            fs.Write(answer, 0, answer.Length);
+                        }
+
+                        if (showMessages)
+                        {
+                            MessageBox.Show("StarterTSD.exe успешно получен, необходимо перезапустить программу");
+                            MessageBox.Show("Впредь запускайте программу через файл StarterTSD");
+                        }
+                        return true; // Успех
+                    }
+                    else
+                    {
+                        string response = UTF8Encoding.UTF8.GetString(answer, 0, answer.Length);
+
+                        if (showMessages)
+                        {
+                            if (response == "1000")
+                            {
+                                MessageBox.Show("Этот тсд еще не зарегистрирован ");
+                            }
+                            else if (response == "-2")
+                            {
+                                MessageBox.Show("Файл StarterTSD.exe не найден на сервере!");
+                            }
+                            else
+                            {
+                                MessageBox.Show("При получении обновления произошли ошибки, попробуйте позже");
+                            }
+                        }
+                        return false; // Ошибка
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (showMessages)
+                {
+                    MessageBox.Show("Ошибка сети: " + ex.Message);
+                }
+                return false; // Ошибка
+            }
+        }
+
+        
 
         public static string get_startup_folder_path()
         {
@@ -354,37 +589,46 @@ namespace TSD
         //        }
         //    }
         //}
+        //public static string PathForBases
+        //{
+        //    get
+        //    {
+        //        //if (pathForBases == null)
+        //        //{
+        //            //if (Directory.Exists("\\Storage Card")==true)
+        //            //{
+        //            //    pathForBases+="\\Storage Card\\Data.sdf";
+        //            //}
+        //            //else if (Directory.Exists("\\SDMMC Disk")==true)
+        //            //{
+        //            //    pathForBases+="\\SDMMC Disk\\Data.sdf";
+        //            //}
+        //            //else if (Directory.Exists("\\SD Disk")==true)
+        //            //{
+        //            //    pathForBases+="\\SD Disk\\Data.sdf";
+        //            //}
+        //            //else
+        //            //{
+        //            //    pathForBases+="Data.sdf";
+        //            //}
+        //            //return "\\Storage Card\\TSD.db";
+        //            return "\\Application\\TSD.db";
+        //            //return "\\TSD.sdf";
+        //            //return pathForBases;
+        //        //}
+        //        //else
+        //        //{
+        //            //return pathForBases;
+        //        //}
+        //    }
+        //}
+
         public static string PathForBases
         {
             get
             {
-                //if (pathForBases == null)
-                //{
-                    //if (Directory.Exists("\\Storage Card")==true)
-                    //{
-                    //    pathForBases+="\\Storage Card\\Data.sdf";
-                    //}
-                    //else if (Directory.Exists("\\SDMMC Disk")==true)
-                    //{
-                    //    pathForBases+="\\SDMMC Disk\\Data.sdf";
-                    //}
-                    //else if (Directory.Exists("\\SD Disk")==true)
-                    //{
-                    //    pathForBases+="\\SD Disk\\Data.sdf";
-                    //}
-                    //else
-                    //{
-                    //    pathForBases+="Data.sdf";
-                    //}
-                    //return "\\Storage Card\\TSD.db";
-                    return "\\Application\\TSD.db";
-                    //return "\\TSD.sdf";
-                    //return pathForBases;
-                //}
-                //else
-                //{
-                    //return pathForBases;
-                //}
+                // Возвращаем новое имя файла базы данных
+                return "\\Application\\TSD_database.db";
             }
         }
 

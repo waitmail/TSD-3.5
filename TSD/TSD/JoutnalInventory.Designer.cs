@@ -33,6 +33,7 @@
             this.btn_new_document = new System.Windows.Forms.Button();
             this.txtB_selection_text = new System.Windows.Forms.TextBox();
             this.btn_selection = new System.Windows.Forms.Button();
+            this.btn_reload = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView_inventory
@@ -75,6 +76,16 @@
             this.btn_selection.TabIndex = 4;
             this.btn_selection.Click += new System.EventHandler(this.btn_selection_Click);
             // 
+            // btn_reload
+            // 
+            this.btn_reload.Location = new System.Drawing.Point(85, 270);
+            this.btn_reload.Name = "btn_reload";
+            this.btn_reload.Size = new System.Drawing.Size(229, 25);
+            this.btn_reload.TabIndex = 6;
+            this.btn_reload.Text = "Выг. повт. док. сроки с 1 июля";
+            this.btn_reload.Visible = false;
+            this.btn_reload.Click += new System.EventHandler(this.btn_reload_Click);
+            // 
             // JoutnalInventory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -82,6 +93,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
+            this.Controls.Add(this.btn_reload);
             this.Controls.Add(this.btn_selection);
             this.Controls.Add(this.txtB_selection_text);
             this.Controls.Add(this.btn_new_document);
@@ -101,5 +113,6 @@
         private System.Windows.Forms.Button btn_new_document;
         private System.Windows.Forms.TextBox txtB_selection_text;
         private System.Windows.Forms.Button btn_selection;
+        private System.Windows.Forms.Button btn_reload;
     }
 }

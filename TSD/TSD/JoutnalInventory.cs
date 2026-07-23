@@ -128,7 +128,8 @@ namespace TSD
                 this.Controls.Remove(this.btn_selection);
                 this.Controls.Remove(this.label_comment);
                 this.listView_inventory.Location = new System.Drawing.Point(3, 3);                
-                this.listView_inventory.Size = new System.Drawing.Size(312, 265);                
+                this.listView_inventory.Size = new System.Drawing.Size(312, 265);
+                btn_reload.Visible = true;
             }
 
         }
@@ -443,6 +444,29 @@ namespace TSD
         private void btn_shelf_life_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_reload_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SQLiteConnection conn = Program.ConnectForDataBase())
+                {
+                    conn.Open();
+                    // Меняем статус 3 (отправлен) на 2 (готов к отправке) для документов сбора сроков (type=5) с 1 июля
+                    string query = "UPDATE dh SET status=2 WHERE type=5 AND status=3 AND date >= '2024-07-01'";
+                    using (SQLiteCommand command = new SQLiteCommand(query, conn))
+                    {
+                        int rows = command.ExecuteNonQuery();
+                        MessageBox.Show("Готово! Обновлено документов: " + rows.ToString());
+                    }
+                }
+                load_documents();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
+            }
         }       
     }
 }
