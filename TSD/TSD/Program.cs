@@ -79,7 +79,7 @@ namespace TSD
             string starterPath = Program.get_startup_folder_path() + "StarterTSD.exe";
             if (!File.Exists(starterPath))
             {
-                if (Program.DownloadStarter(false))
+                if (Program.DownloadStarter(true))
                 {
                     need_restart = true;
                 }
@@ -88,7 +88,7 @@ namespace TSD
             string dllPath = Program.get_startup_folder_path() + "Newtonsoft.Json.Compact.dll";
             if (!File.Exists(dllPath))
             {
-                if (Program.DownloadJsonDll(false))
+                if (Program.DownloadJsonDll(true))
                 {
                     need_restart = true;
                 }
