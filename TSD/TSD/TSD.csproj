@@ -13,13 +13,13 @@
     <PlatformFamilyName>WindowsCE</PlatformFamilyName>
     <PlatformID>08421fe6-3043-4bb0-895d-36a58d92ed42</PlatformID>
     <OSVersion>7.0</OSVersion>
-    <DeployDirSuffix>\Application\TSD_Application</DeployDirSuffix>
+    <DeployDirSuffix>\Application\TSD Application</DeployDirSuffix>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <NativePlatformName>Symbol MC3200c70 Windows CE 7.0 PSDK</NativePlatformName>
     <FormFactorID>
     </FormFactorID>
     <DeployDirPrefix>\</DeployDirPrefix>
-    <ApplicationIcon>Burn.ico</ApplicationIcon>
+    <ApplicationIcon>christmas %282%29.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -193,6 +193,7 @@
     <Compile Include="Setting.Designer.cs">
       <DependentUpon>Setting.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShortcutHelper.cs" />
     <Compile Include="Web References\WS\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -236,6 +237,7 @@
   <ItemGroup>
     <Content Include="burn %281%29.ico" />
     <Content Include="Burn.ico" />
+    <Content Include="christmas %282%29.ico" />
     <Content Include="Resources\Burn.ico" />
     <Content Include="SQLite.Interop.103.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

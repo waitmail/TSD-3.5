@@ -669,10 +669,10 @@
   </wsdl:binding>
   <wsdl:service name="WS">
     <wsdl:port name="WSSoap" binding="tns:WSSoap">
-      <soap:address location="http://ch.sd2.com.ua/WS/WS.asmx" />
+      <soap:address location="http://ch.sd2.com.ru/WS/WS.asmx" />
     </wsdl:port>
     <wsdl:port name="WSSoap12" binding="tns:WSSoap12">
-      <soap12:address location="http://ch.sd2.com.ua/WS/WS.asmx" />
+      <soap12:address location="http://ch.sd2.com.ru/WS/WS.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

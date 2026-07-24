@@ -28,7 +28,7 @@ namespace TSD.WS {
         
         /// <remarks/>
         public WS() {
-            this.Url = "http://ch.sd2.com.ua/WS/WS.asmx";
+            this.Url = "http://ch.sd2.com.ru/WS/WS.asmx";
         }
         
         /// <remarks/>

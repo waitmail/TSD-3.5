@@ -103,7 +103,8 @@ namespace TSD
             }
 
             // Создаем ярлык на рабочем столе, если его нет
-            CreateShortcutIfNotExists();
+            //CreateShortcutIfNotExists();
+            ShortcutHelper.CreateShortcutIfNotExists();
 
             // 5. ЗАПУСК ГЛАВНОЙ ФОРМЫ
             Application.Run(new MainForm());
