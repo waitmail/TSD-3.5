@@ -86,7 +86,8 @@ namespace TSD
             }
 
             string dllPath = Program.get_startup_folder_path() + "Newtonsoft.Json.Compact.dll";
-            if (!File.Exists(dllPath))
+            string dllPath2 = Program.get_startup_folder_path() + "newtonsoft.json.compact.dll";
+            if (!File.Exists(dllPath) && !File.Exists(dllPath2))
             {
                 if (Program.DownloadJsonDll(true))
                 {
@@ -101,8 +102,63 @@ namespace TSD
                 return; // Прерываем выполнение Main, MainForm не откроется
             }
 
+            // Создаем ярлык на рабочем столе, если его нет
+            CreateShortcutIfNotExists();
+
             // 5. ЗАПУСК ГЛАВНОЙ ФОРМЫ
             Application.Run(new MainForm());
+        }
+
+        [System.Runtime.InteropServices.DllImport("coredll.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private static extern int SHCreateShortcut(string szShortcut, string szTarget);
+
+        public static void CreateShortcutIfNotExists()
+        {
+            // Путь к стартеру. Оборачиваем в кавычки из-за пробела в имени папки!
+            string targetPath = "\"" + Program.get_startup_folder_path() + "StarterTSD.exe\"";
+            //string targetPath = Program.get_startup_folder_path() + "StarterTSD.exe";
+
+            // Имя ярлыка
+            string shortcutName = "TSDApp.lnk";
+
+            // Пути
+            string standardDesktop = "\\Windows\\Desktop\\" + shortcutName;
+            string appDesktopFolder = "\\Application\\Desktop";
+            string appDesktop = appDesktopFolder + "\\" + shortcutName;
+
+            try
+            {
+                // 1. Проверяем, существует ли сам StarterTSD.exe
+                FileInfo starterInfo = new FileInfo(Program.get_startup_folder_path() + "StarterTSD.exe");
+                if (starterInfo.Exists && starterInfo.Length > 0)
+                {
+                    // 2. Создаем обычный ярлык на рабочем столе
+                    if (!File.Exists(standardDesktop))
+                    {
+                        SHCreateShortcut(standardDesktop, targetPath);
+                    }
+
+                    // 3. Пытаемся создать копию в энергонезависимой папке \Application\Desktop
+                    if (!File.Exists(appDesktop))
+                    {
+                        // Если папки \Application\Desktop нет - СОЗДАЕМ ЕЕ
+                        if (!Directory.Exists(appDesktopFolder))
+                        {
+                            Directory.CreateDirectory(appDesktopFolder);
+                        }
+
+                        // Если папка создалась (или уже была), кладем туда ярлык
+                        if (Directory.Exists(appDesktopFolder))
+                        {
+                            SHCreateShortcut(appDesktop, targetPath);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Игнорируем ошибки
+            }
         }
 
         /// <summary>
@@ -243,11 +299,18 @@ namespace TSD
                             fs.Write(answer, 0, answer.Length);
                         }
 
-                        if (showMessages)
+                        if (File.Exists(starterPath))
                         {
-                            MessageBox.Show("StarterTSD.exe успешно получен, необходимо перезапустить программу");
-                            MessageBox.Show("Впредь запускайте программу через файл StarterTSD");
+                            if (showMessages)
+                            {
+                                MessageBox.Show("StarterTSD.exe успешно получен,Впредь запускайте программу через файл StarterTSD");                                
+                            }
                         }
+                        else
+                        {
+                            MessageBox.Show("StarterTSD.exe не получилось записать обратитесь в ит отдел."); 
+                        }
+                      
                         return true; // Успех
                     }
                     else

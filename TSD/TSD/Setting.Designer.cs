@@ -124,12 +124,11 @@
             // 
             // btn_get_starter
             // 
-            this.btn_get_starter.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
             this.btn_get_starter.Location = new System.Drawing.Point(164, 222);
             this.btn_get_starter.Name = "btn_get_starter";
             this.btn_get_starter.Size = new System.Drawing.Size(150, 31);
             this.btn_get_starter.TabIndex = 14;
-            this.btn_get_starter.Text = "Загрузить стартер";
+            this.btn_get_starter.Text = "(4)Загрузить стартер";
             this.btn_get_starter.Click += new System.EventHandler(this.btn_get_starter_Click);
             // 
             // Setting

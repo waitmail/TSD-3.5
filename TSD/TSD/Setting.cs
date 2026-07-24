@@ -88,9 +88,13 @@ namespace TSD
             
             string startup_folder_path = Program.get_startup_folder_path();
 
-            if (File.Exists(startup_folder_path + "Newtonsoft.Json.Compact.dll"))
+            if (File.Exists(startup_folder_path + "Newtonsoft.Json.Compact.dll") || File.Exists(startup_folder_path + "newtonsoft.json.compact.dll"))
             {
                 btn_get_dll.Enabled = false;
+            }
+            if (File.Exists(startup_folder_path + "StarterTSD.exe"))
+            {
+                btn_get_starter.Enabled = false;
             }
 
             //ws.GetExistDocumentTSD(Program.get_device_id,,Program.GetDbId());
@@ -133,6 +137,10 @@ namespace TSD
             if (e.KeyCode == Keys.D3)
             {
                 btn_get_dll_Click(null, null);
+            }
+            if (e.KeyCode == Keys.D4)
+            {
+                btn_get_starter_Click(null, null);
             }
         }
 
@@ -369,6 +377,10 @@ namespace TSD
 
         private void btn_get_dll_Click(object sender, EventArgs e)
         {
+            if (!btn_get_dll.Enabled)
+            {
+                return;
+            }
             // Вызываем общий метод с показом сообщений
             if (Program.DownloadJsonDll(true))
             {
@@ -380,6 +392,11 @@ namespace TSD
 
         private void btn_get_starter_Click(object sender, EventArgs e)
         {
+            if (!btn_get_starter.Enabled)
+            {
+                return;
+            }            
+
             // Вызываем общий метод с показом сообщений
             if (Program.DownloadStarter(true))
             {

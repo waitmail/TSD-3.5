@@ -13,11 +13,13 @@
     <PlatformFamilyName>WindowsCE</PlatformFamilyName>
     <PlatformID>08421fe6-3043-4bb0-895d-36a58d92ed42</PlatformID>
     <OSVersion>7.0</OSVersion>
-    <DeployDirSuffix>TSD</DeployDirSuffix>
+    <DeployDirSuffix>\Application\TSD_Application</DeployDirSuffix>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <NativePlatformName>Symbol MC3200c70 Windows CE 7.0 PSDK</NativePlatformName>
     <FormFactorID>
     </FormFactorID>
+    <DeployDirPrefix>\</DeployDirPrefix>
+    <ApplicationIcon>Burn.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,6 +167,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="SelectButtonBox.cs">
       <SubType>Form</SubType>
@@ -229,6 +232,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Web References\WS\WS.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="burn %281%29.ico" />
+    <Content Include="Burn.ico" />
+    <Content Include="Resources\Burn.ico" />
+    <Content Include="SQLite.Interop.103.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>
