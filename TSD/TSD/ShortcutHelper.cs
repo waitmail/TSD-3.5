@@ -10,12 +10,14 @@ namespace TSD
         {
             try
             {
+                // ★ Гарантируем слэш на конце
                 string startupFolder = Program.get_startup_folder_path();
                 if (!startupFolder.EndsWith("\\"))
                     startupFolder += "\\";
 
                 string targetExe = startupFolder + "StarterTSD.exe";
 
+                // Если стартера нет, ярлык не создаем
                 if (!File.Exists(targetExe))
                     return;
 
@@ -24,7 +26,9 @@ namespace TSD
                 // --- Рабочий стол (ОЗУ) ---
                 string desktop = "\\Windows\\Desktop\\" + shortcutName;
                 if (!File.Exists(desktop))
+                {
                     CreateManualShortcut(desktop, targetExe);
+                }
 
                 // --- Энергонезависимая память ---
                 string appDesktopFolder = "\\Application\\Desktop";
@@ -39,18 +43,29 @@ namespace TSD
             }
             catch (Exception)
             {
-                // Игнорируем
+                // Игнорируем ошибки
             }
         }
 
         private static void CreateManualShortcut(string shortcutPath, string targetExe)
         {
-            string lnkContent = targetExe.Length.ToString() + "#" + targetExe;
-            byte[] bytes = Encoding.Default.GetBytes(lnkContent);
+            // 1. Оборачиваем путь в кавычки, чтобы Windows CE поняла пробелы
+            string pathWithQuotes = "\"" + targetExe + "\"";
 
+            // 2. Формат: ДлинаСтроки#Путь (длина считается ВКЛЮЧАЯ кавычки)
+            string lnkContent = pathWithQuotes.Length.ToString() + "#" + pathWithQuotes;
+
+            // 3. Конвертируем в байты. 
+            // ВАЖНО: используем новый UTF8Encoding(false), чтобы НЕ записывать BOM (невидимый символ в начале файла)
+            byte[] bytes = new UTF8Encoding(false).GetBytes(lnkContent);
+
+            // 4. Записываем байты в файл
             using (FileStream fs = new FileStream(shortcutPath, FileMode.Create, FileAccess.Write))
             {
                 fs.Write(bytes, 0, bytes.Length);
+
+                // 5. Добавляем нулевой байт в конец файла (маркер конца строки для Windows CE)
+                fs.WriteByte(0);
             }
         }
     }
