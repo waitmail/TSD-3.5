@@ -21,7 +21,8 @@ namespace TSD
         private DateTime datetime_select_position = DateTime.Now;
         //private bool listView_stroki_change_pos = false;
         private int display_quantity = 0;
-        private bool show_all_stroki = true;
+        //private bool show_all_stroki = true;
+        private bool show_all_stroki = false;
         //string comment = "";
         public string num_box = "";
 
@@ -779,7 +780,8 @@ namespace TSD
                                                                                   " characteristic.name AS characteristic_name,dt.line_number FROM dt " +
                                                                                   " LEFT JOIN tovar ON dt.tovar_code = tovar.code " +
                                                                                   " LEFT JOIN characteristic ON dt.characteristic = characteristic.guid " +
-                                                                                  " where dt.guid=@guid AND box=@box" + dop_query +
+                                                                                  //" where dt.guid=@guid AND box=@box" + dop_query +
+                                                                                  " where dt.guid=@guid " + dop_query +
                                                                                   " order by dt.line_number";
                             }
                         }
@@ -809,7 +811,11 @@ namespace TSD
                         using (command = new SQLiteCommand(query, conn))
                         {
                             command.Parameters.Add(_guid);
-                            command.Parameters.Add(_box);
+                            //command.Parameters.Add(_box);
+                            if (num_box != "")
+                            {
+                                command.Parameters.Add(_box);
+                            }
                             using (SQLiteDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())

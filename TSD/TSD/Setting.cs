@@ -24,31 +24,120 @@ namespace TSD
         }
 
 
+        //private void check_new_version()
+        //{
+        //    TSD.WS.WS ws = new TSD.WS.WS();
+        //    string device_id = Program.get_device_id();
+        //    string key = device_id + CryptorEngine.get_count_day_tsd();
+
+        //    /*string CryptorEngine.Decrypt(device_id,true,key);*/
+        //    Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        //    string str_version = version.ToString().Substring(0, 2) + "." + version.ToString().Substring(3, 2) + "." + version.ToString().Substring(6, 5);
+        //    string web_query =  CryptorEngine.Encrypt(device_id+"|"+str_version, true, key);
+        //    /*System.IO.StreamWriter sw = new System.IO.StreamWriter("\\query.txt");
+        //    sw.WriteLine(device_id);
+        //    sw.WriteLine(CryptorEngine.Encrypt(web_query, true, key));
+        //    sw.Close();*/
+            
+        //    int num_base = Program.GetDbId();
+        //    if (num_base == -1)
+        //    {
+        //        return;
+        //    }
+
+        //    string result_web_query="";
+
+        //    try
+        //    {                
+        //        result_web_query = ws.ExistsUpdateProrgam(device_id, web_query, num_base);
+
+        //        if (result_web_query == "1000")
+        //        {
+        //            MessageBox.Show("Этот тсд еще не зарегистрирован ");
+        //        }
+        //        else if (result_web_query == "")
+        //        {
+        //            lbl_have_new_version.Text = " У вас установлена актуальная версия программы  "; 
+        //        }
+        //        else
+        //        {
+        //            string answer = CryptorEngine.Decrypt(result_web_query, true, key);
+        //            string answer_modify = "";
+        //            if (answer != version.ToString())
+        //            {
+        //                answer = answer.ToString().Substring(0, 2) + "." + answer.ToString().Substring(3, 2) + "." + answer.ToString().Substring(6, 5);
+        //                answer_modify = answer.ToString().Substring(0, 2) + "." + answer.ToString().Substring(3, 2) + "." + answer.ToString().Substring(6, 5).Replace(".", "");
+        //                lbl_have_new_version.Text = " Имеется новая версия программы  " + answer_modify;// CryptorEngine.Decrypt(received, true, key).Replace(".", "-");
+        //                lbl_have_new_version.Tag = answer;
+        //                btn_get_new_program.Enabled = true;
+        //            }
+        //            else
+        //            {
+        //                lbl_have_new_version.Text = " У вас установлена актуальная версия программы  "; 
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
+
+        //private void Setting_Load(object sender, EventArgs e)
+        //{
+            
+        //    string startup_folder_path = Program.get_startup_folder_path();
+
+        //    if (File.Exists(startup_folder_path + "Newtonsoft.Json.Compact.dll") || File.Exists(startup_folder_path + "newtonsoft.json.compact.dll"))
+        //    {
+        //        btn_get_dll.Enabled = false;
+        //    }
+        //    if (File.Exists(startup_folder_path + "StarterTSD.exe"))
+        //    {
+        //        btn_get_starter.Enabled = false;
+        //    }
+
+        //    //ws.GetExistDocumentTSD(Program.get_device_id,,Program.GetDbId());
+        //    //cmb_bases.Items.Add("Чистый дом У");
+        //    cmb_bases.Items.Add("Не магазин");
+        //    //cmb_bases.Items.Add("Одежда");
+        //    cmb_bases.Items.Add("Магазин");
+        //    //cmb_bases.Items.Add("Е-сеть");            
+
+        //    load_setting();            
+        //    lbl_guid.Text = Program.get_device_id();
+            
+        //    FileInfo fi = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().FullName);
+        //    string rem_version = fi.Name.Substring(13, 11);            
+        //    //Process process =new Process();
+        //    //process.StartInfo.FileName = "myProg1.exe";
+
+        //    Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        //    lbl_version.Text = " Версия программы "+version.ToString().Substring(0, 2) + "." + version.ToString().Substring(3, 2) + "." + version.ToString().Substring(6, 5).Replace(".","");
+        //}
+
         private void check_new_version()
         {
             TSD.WS.WS ws = new TSD.WS.WS();
             string device_id = Program.get_device_id();
             string key = device_id + CryptorEngine.get_count_day_tsd();
 
-            /*string CryptorEngine.Decrypt(device_id,true,key);*/
             Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            string str_version = version.ToString().Substring(0, 2) + "." + version.ToString().Substring(3, 2) + "." + version.ToString().Substring(6, 5);
-            string web_query =  CryptorEngine.Encrypt(device_id+"|"+str_version, true, key);
-            /*System.IO.StreamWriter sw = new System.IO.StreamWriter("\\query.txt");
-            sw.WriteLine(device_id);
-            sw.WriteLine(CryptorEngine.Encrypt(web_query, true, key));
-            sw.Close();*/
-            
+            // Формируем строку вида "День.Месяц.Год" из основных номеров версий
+            string str_version = version.Major + "." + version.Minor + "." + version.Build;
+
+            string web_query = CryptorEngine.Encrypt(device_id + "|" + str_version, true, key);
+
             int num_base = Program.GetDbId();
             if (num_base == -1)
             {
                 return;
             }
 
-            string result_web_query="";
+            string result_web_query = "";
 
             try
-            {                
+            {
                 result_web_query = ws.ExistsUpdateProrgam(device_id, web_query, num_base);
 
                 if (result_web_query == "1000")
@@ -57,23 +146,21 @@ namespace TSD
                 }
                 else if (result_web_query == "")
                 {
-                    lbl_have_new_version.Text = " У вас установлена актуальная версия программы  "; 
+                    lbl_have_new_version.Text = " У вас установлена актуальная версия программы  ";
                 }
                 else
                 {
                     string answer = CryptorEngine.Decrypt(result_web_query, true, key);
-                    string answer_modify = "";
-                    if (answer != version.ToString())
+                    if (answer != str_version)
                     {
-                        answer = answer.ToString().Substring(0, 2) + "." + answer.ToString().Substring(3, 2) + "." + answer.ToString().Substring(6, 5);
-                        answer_modify = answer.ToString().Substring(0, 2) + "." + answer.ToString().Substring(3, 2) + "." + answer.ToString().Substring(6, 5).Replace(".", "");
-                        lbl_have_new_version.Text = " Имеется новая версия программы  " + answer_modify;// CryptorEngine.Decrypt(received, true, key).Replace(".", "-");
+                        // answer приходит в формате "dd.MM.yyyy" (например "05.04.2025")
+                        lbl_have_new_version.Text = " Имеется новая версия программы  " + answer;
                         lbl_have_new_version.Tag = answer;
                         btn_get_new_program.Enabled = true;
                     }
                     else
                     {
-                        lbl_have_new_version.Text = " У вас установлена актуальная версия программы  "; 
+                        lbl_have_new_version.Text = " У вас установлена актуальная версия программы  ";
                     }
                 }
             }
@@ -85,7 +172,6 @@ namespace TSD
 
         private void Setting_Load(object sender, EventArgs e)
         {
-            
             string startup_folder_path = Program.get_startup_folder_path();
 
             if (File.Exists(startup_folder_path + "Newtonsoft.Json.Compact.dll") || File.Exists(startup_folder_path + "newtonsoft.json.compact.dll"))
@@ -97,23 +183,15 @@ namespace TSD
                 btn_get_starter.Enabled = false;
             }
 
-            //ws.GetExistDocumentTSD(Program.get_device_id,,Program.GetDbId());
-            //cmb_bases.Items.Add("Чистый дом У");
             cmb_bases.Items.Add("Не магазин");
-            //cmb_bases.Items.Add("Одежда");
             cmb_bases.Items.Add("Магазин");
-            //cmb_bases.Items.Add("Е-сеть");            
 
-            load_setting();            
+            load_setting();
             lbl_guid.Text = Program.get_device_id();
-            
-            FileInfo fi = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().FullName);
-            string rem_version = fi.Name.Substring(13, 11);            
-            //Process process =new Process();
-            //process.StartInfo.FileName = "myProg1.exe";
 
             Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            lbl_version.Text = " Версия программы "+version.ToString().Substring(0, 2) + "." + version.ToString().Substring(3, 2) + "." + version.ToString().Substring(6, 5).Replace(".","");
+            // Выводим версию без опасных Substring
+            lbl_version.Text = " Версия программы " + version.Major + "." + version.Minor + "." + version.Build;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -338,7 +416,8 @@ namespace TSD
                 string device_id = Program.get_device_id();
                 string key = device_id + CryptorEngine.get_count_day_tsd();
                 string web_query = CryptorEngine.Encrypt(Program.get_device_id() + "|" + lbl_have_new_version.Tag.ToString(), true, key);
-                byte[] answer = ws.GetUpdateProgram(Program.get_device_id(), web_query, Program.GetDbId());
+                byte[] answer = ws.GetUpdateProgram(Program.get_device_id(), web_query, Program.GetDbId());     
+          
                 if (answer.Length > 1000)
                 {
                     using (FileStream fs = File.OpenWrite(startup_folder_path + "_TSD.exe"))
