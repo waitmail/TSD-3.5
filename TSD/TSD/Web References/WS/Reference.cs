@@ -28,7 +28,7 @@ namespace TSD.WS {
         
         /// <remarks/>
         public WS() {
-            this.Url = "http://ch.sd2.com.ru/WS/WS.asmx";
+            this.Url = "http://ch.sd2.com.ua/WS/WS.asmx";
         }
         
         /// <remarks/>
@@ -389,6 +389,32 @@ namespace TSD.WS {
         public byte[] EndGetStarterTSD(System.IAsyncResult asyncResult) {
             object[] results = this.EndInvoke(asyncResult);
             return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDatabase", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string UploadDatabase(string guid, string data, [System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")] byte[] dbFile, int num_base) {
+            object[] results = this.Invoke("UploadDatabase", new object[] {
+                        guid,
+                        data,
+                        dbFile,
+                        num_base});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginUploadDatabase(string guid, string data, byte[] dbFile, int num_base, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("UploadDatabase", new object[] {
+                        guid,
+                        data,
+                        dbFile,
+                        num_base}, callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public string EndUploadDatabase(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
         }
     }
 }

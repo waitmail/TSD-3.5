@@ -124,7 +124,8 @@ namespace TSD
 
             Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             // Формируем строку вида "День.Месяц.Год" из основных номеров версий
-            string str_version = version.Major + "." + version.Minor + "." + version.Build;
+            //string str_version = version.Major + "." + version.Minor + "." + version.Build;
+            string str_version = version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
 
             string web_query = CryptorEngine.Encrypt(device_id + "|" + str_version, true, key);
 
@@ -150,17 +151,35 @@ namespace TSD
                 }
                 else
                 {
+                    //string answer = CryptorEngine.Decrypt(result_web_query, true, key);
+                    //if (answer != str_version)
+                    //{
+                    //    // answer приходит в формате "dd.MM.yyyy" (например "05.04.2025")
+                    //    lbl_have_new_version.Text = " Имеется новая версия программы  " + answer;
+                    //    lbl_have_new_version.Tag = answer;
+                    //    btn_get_new_program.Enabled = true;
+                    //}
+                    //else
+                    //{
+                    //    lbl_have_new_version.Text = " У вас установлена актуальная версия программы  ";
+                    //}
                     string answer = CryptorEngine.Decrypt(result_web_query, true, key);
                     if (answer != str_version)
                     {
-                        // answer приходит в формате "dd.MM.yyyy" (например "05.04.2025")
+                        // Если сервер вернул дату с ".0" на конце, отрезаем последние 2 символа для красоты на экране
+                        if (answer.EndsWith(".0"))
+                        {
+                            answer = answer.Substring(0, answer.Length - 2);
+                        }
                         lbl_have_new_version.Text = " Имеется новая версия программы  " + answer;
-                        lbl_have_new_version.Tag = answer;
+                        lbl_have_new_version.Tag = answer; // В Tag пойдет чистая дата 11.10.2023
                         btn_get_new_program.Enabled = true;
                     }
                     else
                     {
+                        // ВОЗВРАЩАЕМ ЭТОТ БЛОК:
                         lbl_have_new_version.Text = " У вас установлена актуальная версия программы  ";
+                        btn_get_new_program.Enabled = false;
                     }
                 }
             }
@@ -191,7 +210,8 @@ namespace TSD
 
             Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             // Выводим версию без опасных Substring
-            lbl_version.Text = " Версия программы " + version.Major + "." + version.Minor + "." + version.Build;
+            //lbl_version.Text = " Версия программы " + version.Major + "." + version.Minor + "." + version.Build;
+            lbl_version.Text = " Версия программы " + version.Major + "." + version.Minor + "." + version.Build + version.Revision;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -482,6 +502,70 @@ namespace TSD
                 // Если успешно скачалось, закрываем форму
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
+            }
+        }
+
+        private void btn_send_db_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.Text = "Отправка БД...";
+                this.Refresh();
+
+                // 1. Получаем путь к рабочей базе
+                string originalDbPath = Program.PathForBases; // ВАЖНО: замените на ваш реальный метод получения пути
+                string tempDbPath = "\\Temp\\tsd_dump.db"; // Временная папка в памяти ТСД
+
+                // 2. Копируем базу, чтобы снять блокировку (если программа пишет в неё)
+                if (File.Exists(tempDbPath))
+                {
+                    File.Delete(tempDbPath);
+                }
+                File.Copy(originalDbPath, tempDbPath);
+
+                // 3. Читаем скопированную базу в массив байтов (через FileStream для .NET CF)
+                byte[] dbBytes;
+                using (System.IO.FileStream fs = new System.IO.FileStream(tempDbPath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                {
+                    using (System.IO.BinaryReader br = new System.IO.BinaryReader(fs))
+                    {
+                        dbBytes = br.ReadBytes((int)fs.Length);
+                    }
+                }
+
+                // Удаляем временный файл
+                File.Delete(tempDbPath);
+
+                // 4. Отправляем на сервер
+                TSD.WS.WS ws = new TSD.WS.WS();
+                string device_id = Program.get_device_id();
+                string key = device_id + CryptorEngine.get_count_day_tsd();
+
+                // Шифруем GUID для проверки авторизации
+                string auth_data = CryptorEngine.Encrypt(device_id, true, key);
+
+                this.Text = "Загрузка на сервер...";
+                this.Refresh();
+
+                // Вызываем веб-метод
+                string result = ws.UploadDatabase(device_id, auth_data, dbBytes, Program.GetDbId());
+
+                if (result == "1")
+                {
+                    MessageBox.Show("База успешно отправлена разработчику!", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка отправки: " + result, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message, "Исключение", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
+            }
+            finally
+            {
+                this.Text = "Настройки"; // Возвращаем заголовок формы
             }
         }
     }

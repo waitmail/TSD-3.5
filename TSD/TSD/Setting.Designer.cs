@@ -38,20 +38,21 @@
             this.lbl_have_new_version = new System.Windows.Forms.Label();
             this.btn_get_dll = new System.Windows.Forms.Button();
             this.btn_get_starter = new System.Windows.Forms.Button();
+            this.btn_send_db = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cmb_bases
             // 
-            this.cmb_bases.Location = new System.Drawing.Point(126, 22);
+            this.cmb_bases.Location = new System.Drawing.Point(49, 19);
             this.cmb_bases.Name = "cmb_bases";
-            this.cmb_bases.Size = new System.Drawing.Size(188, 23);
+            this.cmb_bases.Size = new System.Drawing.Size(138, 23);
             this.cmb_bases.TabIndex = 0;
             // 
             // lbl_num_base
             // 
             this.lbl_num_base.Location = new System.Drawing.Point(5, 22);
             this.lbl_num_base.Name = "lbl_num_base";
-            this.lbl_num_base.Size = new System.Drawing.Size(114, 20);
+            this.lbl_num_base.Size = new System.Drawing.Size(47, 20);
             this.lbl_num_base.Text = "База";
             this.lbl_num_base.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
@@ -131,6 +132,15 @@
             this.btn_get_starter.Text = "(4)Загрузить стартер";
             this.btn_get_starter.Click += new System.EventHandler(this.btn_get_starter_Click);
             // 
+            // btn_send_db
+            // 
+            this.btn_send_db.Location = new System.Drawing.Point(193, 3);
+            this.btn_send_db.Name = "btn_send_db";
+            this.btn_send_db.Size = new System.Drawing.Size(121, 45);
+            this.btn_send_db.TabIndex = 19;
+            this.btn_send_db.Text = "Отправить бд";
+            this.btn_send_db.Click += new System.EventHandler(this.btn_send_db_Click);
+            // 
             // Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -138,6 +148,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(318, 295);
             this.ControlBox = false;
+            this.Controls.Add(this.btn_send_db);
             this.Controls.Add(this.btn_get_starter);
             this.Controls.Add(this.btn_get_dll);
             this.Controls.Add(this.lbl_have_new_version);
@@ -169,5 +180,6 @@
         private System.Windows.Forms.Label lbl_have_new_version;
         private System.Windows.Forms.Button btn_get_dll;
         private System.Windows.Forms.Button btn_get_starter;
+        private System.Windows.Forms.Button btn_send_db;
     }
 }
