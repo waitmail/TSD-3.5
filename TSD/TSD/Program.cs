@@ -304,7 +304,7 @@ namespace TSD
                         {
                             if (showMessages)
                             {
-                                MessageBox.Show("StarterTSD.exe успешно получен,Впредь запускайте программу через файл StarterTSD");                                
+                                MessageBox.Show("StarterTSD.exe успешно получен,Впредь запускайте программу через ярлык TSDApp на рабочем столе ");                                
                             }
                         }
                         else

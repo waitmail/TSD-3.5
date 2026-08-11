@@ -27,6 +27,11 @@ namespace TSD
         void ChageData_Paint(object sender, PaintEventArgs e)
         {
             label_powerstatus.Text = ps.ReportPowerStatus("main") + " | " + ps.ReportPowerStatus("");
+            string shop = Program.get_code_shop();
+            if (string.IsNullOrEmpty(shop))
+            {
+                btn_load_documents_1c.Enabled = false;
+            }
         }
 
 
@@ -2617,12 +2622,15 @@ namespace TSD
                 textBox1.Text += " Синхронизация прервана \r\n ";
                 return;
             }
-
-
+            
             //Program.shrink_database();
 
             textBox1.Text += "Синхронизация успешно завершена";
-
+            if (btn_load_documents_1c.Enabled == false)
+            {
+                MessageBox.Show("Это первая успешная синхронизация, программа будет закрыта","Синхронизация");
+                Application.Exit();
+            }
         }
 
         #region load_out_files
