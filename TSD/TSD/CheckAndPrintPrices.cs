@@ -436,6 +436,31 @@ namespace TSD
         //}
 
 
+        //private bool check_positive_quantity(string quantity_shop)
+        //{
+        //    bool result = true;
+
+        //    string quantity = get_quantity_shop();
+        //    if (quantity.Length == 0)
+        //    {
+        //        quantity = "0";
+        //    }
+
+        //    if (quantity == "0")
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        if (Convert.ToInt32(quantity_shop) * -1 > Convert.ToInt32(quantity))
+        //        {
+        //            result = false;
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
         private bool check_positive_quantity(string quantity_shop)
         {
             bool result = true;
@@ -446,13 +471,17 @@ namespace TSD
                 quantity = "0";
             }
 
-            if (quantity == "0")
-            {
+            int currentQuantityInDb = Convert.ToInt32(quantity);
+            int inputQuantity = Convert.ToInt32(quantity_shop);
 
-            }
-            else
+            // Если вводят отрицательное число
+            if (inputQuantity < 0)
             {
-                if (Convert.ToInt32(quantity_shop) * -1 > Convert.ToInt32(quantity))
+                // Берем модуль вводимого числа (например, -1 превращаем в 1)
+                int absInputQuantity = Math.Abs(inputQuantity);
+
+                // Если то, что хотят отнять, больше чем есть в базе — запрещаем
+                if (absInputQuantity > currentQuantityInDb)
                 {
                     result = false;
                 }

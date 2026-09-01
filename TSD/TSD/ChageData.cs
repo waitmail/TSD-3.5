@@ -993,352 +993,1030 @@ namespace TSD
             }
             return resultString;
         }
-              
 
-        //Мой большой метод
+    //    private void TuneConnectionForLoad(SQLiteConnection conn)
+    //    {
+    //        string[] pragmas = new string[] {
+    //    "PRAGMA journal_mode=MEMORY",   // журнал в память — убирает запись rollback-журнала на флеш
+    //    "PRAGMA synchronous=OFF",       // без fsync
+    //    "PRAGMA cache_size=-4096",      // ~4 МБ кеша страниц
+    //    "PRAGMA temp_store=MEMORY",
+    //    "PRAGMA locking_mode=EXCLUSIVE" // не дёргать лок между командами
+    //};
+    //        foreach (string p in pragmas)
+    //        {
+    //            using (SQLiteCommand c = new SQLiteCommand(p, conn))
+    //                c.ExecuteNonQuery();
+    //        }
+    //    }
+
+
+        ////Мой большой метод
+        //private bool download_tmc()
+        //{            
+        //    bool result = true;
+
+        //    //SQL
+        //    //SQLiteConnection conn = null;
+        //    SQLiteTransaction trans = null;
+        //    string query = "";
+        //    string error_query = "";
+        //    //int id_db = 0;
+
+        //    using (SQLiteConnection conn = TSD.Program.ConnectForDataBase())
+        //    {
+        //        try
+        //        {
+        //            string received = "";
+        //            string device_id = Program.get_device_id();
+        //            string key = device_id + CryptorEngine.get_count_day_tsd();                       
+
+        //            using (WS.WS ds = new TSD.WS.WS())
+        //            {
+        //                ds.Timeout = 200 * 1000;
+                        
+        //                textBox1.Text = "Загрузка справочников, запрос данных";
+                        
+
+        //                //string CryptorEngine.Decrypt(device_id,true,key)
+        //                //System.IO.StreamWriter sw = new System.IO.StreamWriter("\\query.txt");
+        //                //sw.WriteLine(key);
+        //                //sw.WriteLine(CryptorEngine.Encrypt(device_id, true, key));
+        //                //sw.Close();
+
+        //                int num_base = Program.GetDbId();
+        //                if (num_base == -1)
+        //                {
+        //                    return false;
+        //                }
+
+        //                received = ds.GetTMCForTSD(device_id, CryptorEngine.Encrypt(device_id, true, key), num_base);//gaa
+
+        //                //string received ="";
+        //                //string fullAppName = System.Reflection.Assembly.GetCallingAssembly().GetName().CodeBase;
+        //                //string fullAppPath = Path.GetDirectoryName(fullAppName);
+
+        //                //UriBuilder uri = new UriBuilder(codeBase);
+        //                //string path = Uri.UnescapeDataString(uri.Path);
+        //                //string directoryPath = Path.GetDirectoryName(path);
+        //                //string[] files = Directory.GetFiles(fullAppPath);
+        //                //MessageBox.Show(File.Exists(fullAppPath + "\\TMC.txt").ToString());
+
+        //                //using (FileStream stream = File.Open(fullAppPath+"\\TMC.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //                //{
+        //                //    using (StreamReader reader = new StreamReader(stream))
+        //                //    {
+        //                //        // прочитаем весь текст из файла
+        //                //        received = reader.ReadToEnd();
+        //                //    }
+        //                //}               
+        //                //"\\Program Files\\TSD\\TMC.txt"
+
+        //                //string received=File.OpenRead
+        //                //ds.Dispose();
+        //            }
+        //            textBox1.Text = "Загрузка справочников, запрос данных успешно";
+
+        //            if (received.Trim() == "1000")
+        //            {
+        //                MessageBox.Show(" Этот ТСД еще не зарегистрирован " + device_id, "Результат запроса");
+        //                result = false;
+        //                return result;
+        //            }
+        //            else if (received.Trim() == "-2")
+        //            {
+        //                MessageBox.Show(" Идет выгрузка данных из 1с, попробуйте синхронизироваться позже.");
+        //                result = false;
+        //                return result;
+        //            }
+
+        //            //string key = device_id + CryptorEngine.get_count_day_tsd();
+        //            //MessageBox.Show(key);
+        //            textBox1.Text = "Попытка расшифровать данные";
+        //            //MessageBox.Show(received.Length.ToString());
+        //            string decrypt_data = CryptorEngine.Decrypt(received, true, key);
+        //            received = "";
+        //            string shop = decrypt_data.Substring(device_id.Length, 3);
+        //            textBox1.Text = shop;
+        //            if (!insert_value_shop_in_databse(shop))
+        //            {
+        //                MessageBox.Show("Произошли ошибки при загрузке данных, загрузка данных прервана");
+        //                result = false;
+        //                return result;
+        //            }
+
+        //            textBox1.Text = shop;
+
+
+        //            string tovar = "";//result.Split(
+
+
+        //            int start_pos = decrypt_data.IndexOf("TOVAR");
+        //            int finish_pos = decrypt_data.Substring(start_pos + 5, decrypt_data.Length - start_pos - 5).IndexOf("TOVAR");
+        //            if (finish_pos == 0)
+        //            {
+        //                MessageBox.Show("Получены неполные данные, загрука невозможна");
+        //                result = false;
+        //                return result;
+        //            }
+        //            //else
+        //            //{
+        //            //    MessageBox.Show("Данные получены");
+        //            //}
+
+        //            tovar = decrypt_data.Substring(start_pos + 5, finish_pos);
+
+        //            start_pos = decrypt_data.IndexOf("BARCODE");
+        //            finish_pos = decrypt_data.Substring(start_pos + 7, decrypt_data.Length - start_pos - 7).IndexOf("BARCODE");
+        //            if (finish_pos == 0)
+        //            {
+        //                MessageBox.Show("Получены неполные данные, загрука невозможна");
+        //                result = false;
+        //                return result;
+        //            }
+        //            string barcode = decrypt_data.Substring(start_pos + 7, finish_pos - 1);
+        //            string characteristic = "";
+
+        //            start_pos = decrypt_data.IndexOf("CHARACTERISTIC");
+        //            finish_pos = decrypt_data.Substring(start_pos + 14, decrypt_data.Length - start_pos - 14).IndexOf("CHARACTERISTIC");
+        //            if ((finish_pos != 0) && (finish_pos != -1))
+        //            {
+        //                characteristic = decrypt_data.Substring(start_pos + 14, finish_pos - 1);
+        //            }
+
+        //            ///первые 3 символа это код магазина сразу обновляем его в константах
+
+        //            StringBuilder sb = new StringBuilder();
+        //            char[] delimiters = new char[] { '|' };
+        //            string[] t = tovar.Split(delimiters);
+        //            tovar = "";
+        //            //Освобождаем память 
+        //            decrypt_data = "";
+        //            //conn = TSD.Program.ConnectForDataBase();
+        //            conn.Open();
+        //            TuneConnectionForLoad(conn);
+        //            using (SQLiteCommand c = new SQLiteCommand("PRAGMA journal_mode", conn))
+        //                AppendToTextBox("journal_mode = " + c.ExecuteScalar());   // должно вернуть "memory"
+
+        //            trans = conn.BeginTransaction();
+        //            SQLiteCommand command = null;
+        //            //textBox1.Text = "Удаляем товары";
+        //            //query = "DELETE FROM TOVAR";
+        //            //command = new SQLiteCommand(query, conn);
+        //            //command.Transaction = trans;
+        //            //command.ExecuteNonQuery();
+        //            //command.Dispose();
+        //            //textBox1.Text = "Загружаются товары ";
+        //            //delimiters = new char[] { '^' };
+        //            //for (int i = 0; i < t.Length - 1; i++)
+        //            //{
+
+        //            //    if (i % 1000 == 0)
+        //            //    {
+        //            //        textBox1.Text = "Обрабатывается товар " + i.ToString() + " из " + t.Length.ToString();
+        //            //    }
+        //            //    //query = "INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES(" + t[i] + ")";
+        //            //    string[] param = t[i].Replace("'", "").Split(delimiters);
+        //            //    //textBox1.Text = t[i];
+        //            //    if (i == 0)
+        //            //    {
+        //            //        query = "INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES(@code,@name,@retail_price,@purchase_price,@its_deleted,@nds)";
+
+        //            //        //textBox1.Text += "i =  " + i.ToString() + "\r\n";
+        //            //        //textBox1.Text += "all " +  t[i]+ "\r\n";
+        //            //        //textBox1.Text += " code " + param[0] + "\r\n";
+        //            //        //textBox1.Text += "name " + param[1] + "\r\n";
+        //            //        //textBox1.Text += "retail_price " + param[2] + "\r\n";
+        //            //        //textBox1.Text += "purchase_price " + param[3] + "\r\n";
+        //            //        //textBox1.Text += "its_deleted " + param[4] + "\r\n";
+        //            //        //textBox1.Text += "nds " + param[5] + "\r\n";
+
+        //            //        SQLiteParameter _code = new SQLiteParameter("code", SqlDbType.Int);
+        //            //        _code.Value = Convert.ToInt32(param[0]);
+        //            //        SQLiteParameter _name = new SQLiteParameter("name", param[1].Replace("'", ""));
+
+        //            //        SQLiteParameter _retail_price = new SQLiteParameter("retail_price", Convert.ToDecimal(param[2]));
+
+        //            //        SQLiteParameter _purchase_price = new SQLiteParameter("purchase_price", Convert.ToDecimal(param[3]));
+
+        //            //        SQLiteParameter _its_deleted = new SQLiteParameter("its_deleted", SqlDbType.SmallInt);
+        //            //        _its_deleted.Value = Convert.ToInt16(param[4]);
+        //            //        SQLiteParameter _nds = new SQLiteParameter("nds", Convert.ToInt32(param[5]));
+
+
+        //            //        command = new SQLiteCommand(query, conn);
+        //            //        command.Parameters.Add(_code);
+        //            //        command.Parameters.Add(_name);
+        //            //        command.Parameters.Add(_retail_price);
+        //            //        command.Parameters.Add(_purchase_price);
+        //            //        command.Parameters.Add(_its_deleted);
+        //            //        command.Parameters.Add(_nds);
+        //            //        command.Prepare();
+        //            //        //textBox1.Text = "успех";
+        //            //    }
+        //            //    else
+        //            //    {
+        //            //        //textBox1.Text += "i =  " + i.ToString() + "\r\n";
+        //            //        //textBox1.Text += "all " + t[i] + "\r\n";
+        //            //        //textBox1.Text += " code " + param[0] + "\r\n";
+        //            //        //textBox1.Text += "name " + param[1] + "\r\n";
+        //            //        //textBox1.Text += "retail_price " + param[2] + "\r\n";
+        //            //        //textBox1.Text += "purchase_price " + param[3] + "\r\n";
+        //            //        //textBox1.Text += "its_deleted " + param[4] + "\r\n";
+        //            //        //textBox1.Text += "nds " + param[5] + "\r\n";
+
+        //            //        command.Parameters[0].Value = Convert.ToInt32(param[0]);
+        //            //        command.Parameters[1].Value = param[1].Replace("'", "");
+        //            //        command.Parameters[2].Value = Convert.ToDecimal(param[2]);
+        //            //        command.Parameters[3].Value = Convert.ToDecimal(param[3]);
+        //            //        command.Parameters[4].Value = Convert.ToInt16(param[4]);
+        //            //        command.Parameters[5].Value = Convert.ToInt32(param[5]);
+        //            //        error_query = command.Parameters[0].Value.ToString() + " | " + command.Parameters[1].Value.ToString() + " | " +
+        //            //            command.Parameters[2].Value.ToString() + " | " + command.Parameters[3].Value.ToString() + " | " +
+        //            //            command.Parameters[4].Value.ToString() + " | " + command.Parameters[5].Value.ToString();
+        //            //    }
+        //            //    command.Transaction = trans;
+        //            //    command.ExecuteNonQuery();
+        //            //}
+        //            ////trans.Commit();
+        //            ////command.Dispose();
+        //            ////conn.Close();
+        //            ////return true;
+        //            ////conn = TSD.Program.ConnectForDataBase();
+        //            ////conn.Open();
+        //            ////trans = conn.BeginTransaction();
+        //            //textBox1.Text += " \r\n Товары загрузились \r\n";
+        //            ////Освобождаем память
+        //            //t = null;
+
+        //            // ---------- Товары: DELETE оставляем, вставку заменяем батчами ----------
+
+        //            textBox1.Text = "Удаляем товары";
+        //            query = "DELETE FROM TOVAR";
+        //            command = new SQLiteCommand(query, conn, trans);
+        //            command.ExecuteNonQuery();
+        //            command.Dispose();
+
+        //            textBox1.Text = "Загружаются товары ";
+        //            delimiters = new char[] { '^' };
+
+        //            const int BATCH_T = 100;                               // 100 строк × 6 параметров = 600 < 999
+        //            int totalT = t.Length - 1;                             // последний элемент Split — пустой
+        //            int posT = 0;
+        //            DateTime lastUiT = DateTime.Now;
+        //            long t0 = Environment.TickCount;                       // замер
+
+        //            // SQL полного батча:
+        //            // INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds)
+        //            // VALUES (@c0,@n0,@r0,@p0,@d0,@v0),(@c1,@n1,@r1,@p1,@d1,@v1),...
+        //            StringBuilder batchSqlT = new StringBuilder(128 + BATCH_T * 70);
+        //            batchSqlT.Append("INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES ");
+        //            for (int r = 0; r < BATCH_T; r++)
+        //            {
+        //                if (r > 0) batchSqlT.Append(',');
+        //                batchSqlT.Append("(@c").Append(r).Append(",@n").Append(r)
+        //                          .Append(",@r").Append(r).Append(",@p").Append(r)
+        //                          .Append(",@d").Append(r).Append(",@v").Append(r).Append(')');
+        //            }
+
+        //            // прямые ссылки на параметры (по два имени на колонку × 6 колонок × 100 строк)
+        //            SQLiteParameter[] pC = new SQLiteParameter[BATCH_T];
+        //            SQLiteParameter[] pN = new SQLiteParameter[BATCH_T];
+        //            SQLiteParameter[] pR = new SQLiteParameter[BATCH_T];
+        //            SQLiteParameter[] pP = new SQLiteParameter[BATCH_T];
+        //            SQLiteParameter[] pD = new SQLiteParameter[BATCH_T];
+        //            SQLiteParameter[] pV = new SQLiteParameter[BATCH_T];
+
+        //            // имя cmd, не command — command занят внешним кодом
+        //            using (SQLiteCommand cmd = new SQLiteCommand(batchSqlT.ToString(), conn, trans))
+        //            {
+        //                for (int r = 0; r < BATCH_T; r++)
+        //                {
+        //                    pC[r] = new SQLiteParameter("c" + r);
+        //                    pN[r] = new SQLiteParameter("n" + r);
+        //                    pR[r] = new SQLiteParameter("r" + r);
+        //                    pP[r] = new SQLiteParameter("p" + r);
+        //                    pD[r] = new SQLiteParameter("d" + r);
+        //                    pV[r] = new SQLiteParameter("v" + r);
+        //                    cmd.Parameters.Add(pC[r]);
+        //                    cmd.Parameters.Add(pN[r]);
+        //                    cmd.Parameters.Add(pR[r]);
+        //                    cmd.Parameters.Add(pP[r]);
+        //                    cmd.Parameters.Add(pD[r]);
+        //                    cmd.Parameters.Add(pV[r]);
+        //                }
+        //                cmd.Prepare();
+
+        //                // ---- полные батчи по 100 строк ----
+        //                while (posT + BATCH_T <= totalT)
+        //                {
+        //                    for (int r = 0; r < BATCH_T; r++)
+        //                    {
+        //                        string[] param = t[posT + r].Split(delimiters);
+        //                        pC[r].Value = Convert.ToInt32(param[0]);
+        //                        pN[r].Value = (param.Length > 1 ? param[1] : "");
+        //                        pR[r].Value = (param.Length > 2 ? Convert.ToDecimal(param[2]) : 0m);
+        //                        pP[r].Value = (param.Length > 3 ? Convert.ToDecimal(param[3]) : 0m);
+        //                        pD[r].Value = (param.Length > 4 ? Convert.ToInt16(param[4]) : 0);
+        //                        pV[r].Value = (param.Length > 5 ? Convert.ToInt32(param[5]) : 0);
+        //                    }
+        //                    cmd.ExecuteNonQuery();                         // 100 строк — один вызов движка
+        //                    posT += BATCH_T;
+
+        //                    if ((DateTime.Now - lastUiT).TotalMilliseconds > 1000)
+        //                    {
+        //                        textBox1.Text = "Обрабатывается товар " + posT.ToString() + " из " + totalT.ToString();
+        //                        lastUiT = DateTime.Now;
+        //                    }
+        //                }
+        //            }
+
+        //            // ---- хвост: неполный батч ----
+        //            if (posT < totalT)
+        //            {
+        //                int take = totalT - posT;
+
+        //                StringBuilder tailSqlT = new StringBuilder(128 + take * 70);
+        //                tailSqlT.Append("INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES ");
+        //                for (int r = 0; r < take; r++)
+        //                {
+        //                    if (r > 0) tailSqlT.Append(',');
+        //                    tailSqlT.Append("(@c").Append(r).Append(",@n").Append(r)
+        //                              .Append(",@r").Append(r).Append(",@p").Append(r)
+        //                              .Append(",@d").Append(r).Append(",@v").Append(r).Append(')');
+        //                }
+
+        //                using (SQLiteCommand cmdTail = new SQLiteCommand(tailSqlT.ToString(), conn, trans))
+        //                {
+        //                    SQLiteParameter[] tc = new SQLiteParameter[take];
+        //                    SQLiteParameter[] tn = new SQLiteParameter[take];
+        //                    SQLiteParameter[] tr = new SQLiteParameter[take];
+        //                    SQLiteParameter[] tp = new SQLiteParameter[take];
+        //                    SQLiteParameter[] td = new SQLiteParameter[take];
+        //                    SQLiteParameter[] tv = new SQLiteParameter[take];
+        //                    for (int r = 0; r < take; r++)
+        //                    {
+        //                        tc[r] = new SQLiteParameter("c" + r);
+        //                        tn[r] = new SQLiteParameter("n" + r);
+        //                        tr[r] = new SQLiteParameter("r" + r);
+        //                        tp[r] = new SQLiteParameter("p" + r);
+        //                        td[r] = new SQLiteParameter("d" + r);
+        //                        tv[r] = new SQLiteParameter("v" + r);
+        //                        cmdTail.Parameters.Add(tc[r]);
+        //                        cmdTail.Parameters.Add(tn[r]);
+        //                        cmdTail.Parameters.Add(tr[r]);
+        //                        cmdTail.Parameters.Add(tp[r]);
+        //                        cmdTail.Parameters.Add(td[r]);
+        //                        cmdTail.Parameters.Add(tv[r]);
+        //                    }
+        //                    for (int r = 0; r < take; r++)
+        //                    {
+        //                        string[] param = t[posT + r].Split(delimiters);
+        //                        tc[r].Value = Convert.ToInt32(param[0]);
+        //                        tn[r].Value = (param.Length > 1 ? param[1] : "");
+        //                        tr[r].Value = (param.Length > 2 ? Convert.ToDecimal(param[2]) : 0m);
+        //                        tp[r].Value = (param.Length > 3 ? Convert.ToDecimal(param[3]) : 0m);
+        //                        td[r].Value = (param.Length > 4 ? Convert.ToInt16(param[4]) : 0);
+        //                        tv[r].Value = (param.Length > 5 ? Convert.ToInt32(param[5]) : 0);
+        //                    }
+        //                    cmdTail.ExecuteNonQuery();
+        //                }
+        //            }
+
+        //            AppendToTextBox("Товары (" + totalT + "): " + (Environment.TickCount - t0) + " мс");
+
+        //            //Освобождаем память — как было у вас
+        //            t = null;
+
+        //            textBox1.Text += " \r\n Товары загрузились \r\n";
+
+        //            delimiters = new char[] { '|' };
+        //            string[] b = barcode.Split(delimiters);
+
+        //            //textBox1.Text = " Удаляем штрихкоды \r\n";
+        //            //query = "DELETE FROM barcodes";
+        //            //command = new SQLiteCommand(query, conn);
+        //            //command.Transaction = trans;
+        //            //command.ExecuteNonQuery();
+        //            //command.Dispose();
+
+        //            //textBox1.Text = "Загружаются штрихкоды \r\n";
+
+        //            //delimiters = new char[] { ',' };
+
+
+        //            //for (int i = 0; i < b.Length - 1; i++)
+        //            //{
+        //            //    if (i % 1000 == 0)
+        //            //    {
+        //            //        textBox1.Text = "Загружаются штрихкоды " + i.ToString() + " из " + b.Length.ToString();
+        //            //    }
+        //            //    string[] param = b[i].Split(delimiters);
+        //            //    //SQLiteParameter _tovar_code = new SQLiteParameter("tovar_code", SqlDbType.Int);
+        //            //    //_tovar_code.Value = Convert.ToInt32(param[0]);
+        //            //    //SQLiteParameter _barcode = new SQLiteParameter("barcode", SqlDbType.NVarChar);
+        //            //    //_barcode.Value = param[1].Replace("'", "");
+
+        //            //    if (i == 0)
+        //            //    {
+        //            //        query = "INSERT INTO barcodes(tovar_code,barcode_code) VALUES(@tovar_code,@barcode)";
+        //            //        SQLiteParameter _tovar_code = new SQLiteParameter("tovar_code", Convert.ToInt32(param[0]));
+        //            //        SQLiteParameter _barcode = new SQLiteParameter("barcode", param[1].Replace("'", ""));                            
+        //            //        command = new SQLiteCommand(query, conn);
+        //            //        command.Parameters.Add(_tovar_code);
+        //            //        command.Parameters.Add(_barcode);
+        //            //        command.Prepare();
+        //            //    }
+        //            //    else
+        //            //    {
+        //            //        command.Parameters[0].Value = Convert.ToInt32(param[0]);
+        //            //        command.Parameters[1].Value = param[1].Replace("'", "");
+        //            //    }
+        //            //    command.Transaction = trans;
+        //            //    error_query = command.Parameters[0].Value.ToString() + " | " + command.Parameters[1].Value.ToString();
+        //            //    command.ExecuteNonQuery();
+        //            //}
+
+        //            //textBox1.Text = "Штрихкодs загрузились \r\n";
+
+        //            // ---------- Штрихкоды: DELETE оставляем, вставку заменяем батчами ----------
+
+        //            textBox1.Text = " Удаляем штрихкоды \r\n";
+        //            query = "DELETE FROM barcodes";
+        //            command = new SQLiteCommand(query, conn, trans);
+        //            command.ExecuteNonQuery();
+        //            command.Dispose();
+
+        //            textBox1.Text = "Загружаются штрихкоды \r\n";
+
+        //            delimiters = new char[] { ',' };
+
+        //            const int BATCH = 300;                                 // 150 строк × 2 параметра = 300 < лимита 999
+        //            int total = b.Length - 1;                              // последний элемент Split — пустой
+        //            int pos = 0;
+        //            DateTime lastUi = DateTime.Now;
+        //            //long 
+        //                t0 = Environment.TickCount;                       // замер
+
+        //            // SQL для полного батча — один раз:
+        //            // INSERT INTO barcodes(tovar_code,barcode_code) VALUES (@c0,@b0),(@c1,@b1),...
+        //            StringBuilder batchSql = new StringBuilder(64 + BATCH * 22);
+        //            batchSql.Append("INSERT INTO barcodes(tovar_code,barcode_code) VALUES ");
+        //            for (int r = 0; r < BATCH; r++)
+        //            {
+        //                if (r > 0) batchSql.Append(',');
+        //                batchSql.Append("(@c").Append(r).Append(",@b").Append(r).Append(')');
+        //            }
+
+        //            // прямые ссылки на параметры — без поиска по имени в цикле
+        //            SQLiteParameter[] pc = new SQLiteParameter[BATCH];
+        //            SQLiteParameter[] pb = new SQLiteParameter[BATCH];
+
+        //            // ВАЖНО: имя cmd, не command — command уже занят внешним кодом
+        //            using (SQLiteCommand cmd = new SQLiteCommand(batchSql.ToString(), conn, trans))
+        //            {
+        //                for (int r = 0; r < BATCH; r++)
+        //                {
+        //                    pc[r] = new SQLiteParameter("c" + r);
+        //                    pb[r] = new SQLiteParameter("b" + r);
+        //                    cmd.Parameters.Add(pc[r]);
+        //                    cmd.Parameters.Add(pb[r]);
+        //                }
+        //                cmd.Prepare();
+
+        //                // ---- полные батчи по 150 строк ----
+        //                while (pos + BATCH <= total)
+        //                {
+        //                    for (int r = 0; r < BATCH; r++)
+        //                    {
+        //                        string[] param = b[pos + r].Split(delimiters);
+        //                        pc[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);
+        //                        pb[r].Value = (param.Length > 1 ? param[1] : "");
+        //                    }
+        //                    cmd.ExecuteNonQuery();                         // 150 строк — один вызов движка
+        //                    pos += BATCH;
+
+        //                    if ((DateTime.Now - lastUi).TotalMilliseconds > 1000)   // UI не чаще раза в секунду
+        //                    {
+        //                        textBox1.Text = "Загружаются штрихкоды " + pos.ToString() + " из " + total.ToString();
+        //                        lastUi = DateTime.Now;
+        //                    }
+        //                }
+        //            }
+
+        //            // ---- хвост: неполный батч (0–149 строк) ----
+        //            if (pos < total)
+        //            {
+        //                int take = total - pos;
+
+        //                StringBuilder tailSql = new StringBuilder(64 + take * 22);
+        //                tailSql.Append("INSERT INTO barcodes(tovar_code,barcode_code) VALUES ");
+        //                for (int r = 0; r < take; r++)
+        //                {
+        //                    if (r > 0) tailSql.Append(',');
+        //                    tailSql.Append("(@c").Append(r).Append(",@b").Append(r).Append(')');
+        //                }
+
+        //                using (SQLiteCommand cmdTail = new SQLiteCommand(tailSql.ToString(), conn, trans))
+        //                {
+        //                    SQLiteParameter[] tc = new SQLiteParameter[take];
+        //                    SQLiteParameter[] tb = new SQLiteParameter[take];
+        //                    for (int r = 0; r < take; r++)
+        //                    {
+        //                        tc[r] = new SQLiteParameter("c" + r);
+        //                        tb[r] = new SQLiteParameter("b" + r);
+        //                        cmdTail.Parameters.Add(tc[r]);
+        //                        cmdTail.Parameters.Add(tb[r]);
+        //                    }
+        //                    for (int r = 0; r < take; r++)
+        //                    {
+        //                        string[] param = b[pos + r].Split(delimiters);
+        //                        tc[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);
+        //                        tb[r].Value = (param.Length > 1 ? param[1] : "");
+        //                    }
+        //                    cmdTail.ExecuteNonQuery();
+        //                }
+        //            }
+
+        //            b = null;                                              // освобождаем память строк
+        //            AppendToTextBox("Штрихкоды (" + total + "): " + (Environment.TickCount - t0) + " мс");
+
+        //            textBox1.Text = "Штрихкодs загрузились \r\n";
+
+        //            //textBox1.Text = "Загружаются характеристики \r\n";
+        //            //delimiters = new char[] { '|' };
+        //            //if (characteristic != "")
+        //            //{
+        //            //    string[] c = characteristic.Split(delimiters);
+        //            //    query = "DELETE FROM characteristic";
+        //            //    command = new SQLiteCommand(query, conn, trans);
+
+        //            //    command.ExecuteNonQuery();
+        //            //    command.Dispose();
+        //            //    for (int i = 0; i < c.Length - 1; i++)
+        //            //    {
+        //            //        if (i % 1000 == 0)
+        //            //        {
+        //            //            textBox1.Text = "Загружаются характеристики " + i.ToString() + " из " + c.Length.ToString();
+        //            //        }
+        //            //        query = "INSERT INTO characteristic(tovar_code, guid, name, retail_price_characteristic) VALUES(" + c[i] + ")";
+        //            //        command = new SQLiteCommand(query, conn, trans);
+        //            //        command.ExecuteNonQuery();
+        //            //        command.Dispose();
+        //            //    }
+        //            //}
+        //            //textBox1.Text += "Характеристики обработались \r\n";
+        //            //MessageBox.Show("Данные спешно загружены !!!");
+        //            trans.Commit();
+        //            //conn.Close();
+        //            command.Dispose();
+        //            trans.Dispose();
+        //        }
+        //        catch (SQLiteException ex)
+        //        {
+        //            if (trans != null)
+        //            {
+        //                trans.Rollback();
+        //            }
+        //            MessageBox.Show(error_query);
+        //            MessageBox.Show(ex.Message);
+        //            result = false;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            if (trans != null)
+        //            {
+        //                trans.Rollback();
+        //            }
+        //            MessageBox.Show(error_query);
+        //            MessageBox.Show(ex.Message);
+        //            result = false;
+        //        }
+        //    }
+        //    //finally
+        //    //{
+        //    //    if (conn != null)
+        //    //    {
+        //    //        if (conn.State == ConnectionState.Open)
+        //    //        {
+        //    //            conn.Close();
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    return result;
+        //}
+
+        #region Загрузка ТМЦ (download_tmc + подметоды)
+
+        // ===== Батчи: строк в одном INSERT. Лимит SQLite — 999 параметров на выражение =====
+        private const int BATCH_TOVAR = 100;     // × 6 параметров = 600
+        private const int BATCH_BARCODE = 300;   // × 2 параметра = 600
+
+        /// <summary> PRAGMA для массовой загрузки. Вызывать ПОСЛЕ Open, ДО BeginTransaction. </summary>
+        private void TuneConnectionForLoad(SQLiteConnection conn)
+        {
+            string[] pragmas = new string[] {
+        "PRAGMA journal_mode=MEMORY",
+        "PRAGMA synchronous=OFF",
+        "PRAGMA cache_size=-4096",
+        "PRAGMA temp_store=MEMORY",
+        "PRAGMA locking_mode=EXCLUSIVE"
+    };
+            foreach (string p in pragmas)
+            {
+                using (SQLiteCommand c = new SQLiteCommand(p, conn)) c.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary> Выполнить один запрос в транзакции. </summary>
+        private void Exec(SQLiteConnection conn, SQLiteTransaction trans, string query)
+        {
+            using (SQLiteCommand command = new SQLiteCommand(query, conn, trans))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary> Откат транзакции без падения (для catch). </summary>
+        private void SafeRollback(SQLiteTransaction trans)
+        {
+            if (trans == null) return;
+            try { trans.Rollback(); }
+            catch { }
+            try { trans.Dispose(); }
+            catch { }
+        }
+
+        /// <summary>
+        /// Вырезать секцию пакета: MARKER данные MARKER.
+        /// null — маркер не найден или не закрыт (битый пакет), "" — секция пуста.
+        /// tailTrim: 0 для TOVAR, 1 для BARCODE/CHARACTERISTIC — повторяет срезы старого кода.
+        /// </summary>
+        private string ExtractSection(string data, string marker, int tailTrim)
+        {
+            int start = data.IndexOf(marker);
+            if (start == -1) return null;
+
+            int contentStart = start + marker.Length;
+            int second = data.IndexOf(marker, contentStart);
+            if (second == -1) return null;              // закрывающий маркер не найден
+
+            int length = (second - contentStart) - tailTrim;
+            if (length <= 0) return "";
+
+            return data.Substring(contentStart, length);
+        }
+
+        // ================== ГЛАВНЫЙ МЕТОД ==================
+
         private bool download_tmc()
-        {            
-            bool result = true;
+        {
+            string device_id = Program.get_device_id();
+            string key = device_id + CryptorEngine.get_count_day_tsd();
 
-            //SQL
-            //SQLiteConnection conn = null;
-            SQLiteTransaction trans = null;
-            string query = "";
-            string error_query = "";
-            //int id_db = 0;
+            int num_base = Program.GetDbId();
+            if (num_base == -1) return false;
 
             using (SQLiteConnection conn = TSD.Program.ConnectForDataBase())
             {
+                SQLiteTransaction trans = null;
                 try
                 {
-                    string received = "";
-                    string device_id = Program.get_device_id();
-                    string key = device_id + CryptorEngine.get_count_day_tsd();                       
-
+                    // ---- 1. Запрос пакета ----
+                    textBox1.Text = "Загрузка справочников, запрос данных";
+                    string received;
                     using (WS.WS ds = new TSD.WS.WS())
                     {
                         ds.Timeout = 200 * 1000;
-                        
-                        textBox1.Text = "Загрузка справочников, запрос данных";
-                        
-
-                        //string CryptorEngine.Decrypt(device_id,true,key)
-                        //System.IO.StreamWriter sw = new System.IO.StreamWriter("\\query.txt");
-                        //sw.WriteLine(key);
-                        //sw.WriteLine(CryptorEngine.Encrypt(device_id, true, key));
-                        //sw.Close();
-
-                        int num_base = Program.GetDbId();
-                        if (num_base == -1)
-                        {
-                            return false;
-                        }
-
-                        received = ds.GetTMCForTSD(device_id, CryptorEngine.Encrypt(device_id, true, key), num_base);//gaa
-
-                        //string received ="";
-                        //string fullAppName = System.Reflection.Assembly.GetCallingAssembly().GetName().CodeBase;
-                        //string fullAppPath = Path.GetDirectoryName(fullAppName);
-
-                        //UriBuilder uri = new UriBuilder(codeBase);
-                        //string path = Uri.UnescapeDataString(uri.Path);
-                        //string directoryPath = Path.GetDirectoryName(path);
-                        //string[] files = Directory.GetFiles(fullAppPath);
-                        //MessageBox.Show(File.Exists(fullAppPath + "\\TMC.txt").ToString());
-
-                        //using (FileStream stream = File.Open(fullAppPath+"\\TMC.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        //{
-                        //    using (StreamReader reader = new StreamReader(stream))
-                        //    {
-                        //        // прочитаем весь текст из файла
-                        //        received = reader.ReadToEnd();
-                        //    }
-                        //}               
-                        //"\\Program Files\\TSD\\TMC.txt"
-
-                        //string received=File.OpenRead
-                        //ds.Dispose();
+                        received = ds.GetTMCForTSD(device_id, CryptorEngine.Encrypt(device_id, true, key), num_base);
                     }
-                    textBox1.Text = "Загрузка справочников, запрос данных успешно";
+                    AppendToTextBox("Запрос данных выполнен");
 
-                    if (received.Trim() == "1000")
+                    string code = (received == null ? "" : received.Trim());
+                    if (code == "1000")
                     {
                         MessageBox.Show(" Этот ТСД еще не зарегистрирован " + device_id, "Результат запроса");
-                        result = false;
-                        return result;
+                        return false;
                     }
-                    else if (received.Trim() == "-2")
+                    if (code == "-2")
                     {
                         MessageBox.Show(" Идет выгрузка данных из 1с, попробуйте синхронизироваться позже.");
-                        result = false;
-                        return result;
+                        return false;
                     }
 
-                    //string key = device_id + CryptorEngine.get_count_day_tsd();
-                    //MessageBox.Show(key);
+                    // ---- 2. Расшифровка и разбор ----
                     textBox1.Text = "Попытка расшифровать данные";
-                    //MessageBox.Show(received.Length.ToString());
                     string decrypt_data = CryptorEngine.Decrypt(received, true, key);
-                    received = "";
+                    received = null;                                   // пакет расшифрован — освобождаем
+
+                    if (decrypt_data == null || decrypt_data.Length < device_id.Length + 3)
+                    {
+                        MessageBox.Show("Пакет поврежден, загрузка невозможна");
+                        return false;
+                    }
                     string shop = decrypt_data.Substring(device_id.Length, 3);
-                    textBox1.Text = shop;
                     if (!insert_value_shop_in_databse(shop))
                     {
                         MessageBox.Show("Произошли ошибки при загрузке данных, загрузка данных прервана");
-                        result = false;
-                        return result;
+                        return false;
                     }
 
-                    textBox1.Text = shop;
-
-
-                    string tovar = "";//result.Split(
-
-
-                    int start_pos = decrypt_data.IndexOf("TOVAR");
-                    int finish_pos = decrypt_data.Substring(start_pos + 5, decrypt_data.Length - start_pos - 5).IndexOf("TOVAR");
-                    if (finish_pos == 0)
+                    string tovarSection = ExtractSection(decrypt_data, "TOVAR", 0);
+                    if (string.IsNullOrEmpty(tovarSection))
                     {
-                        MessageBox.Show("Получены неполные данные, загрука невозможна");
-                        result = false;
-                        return result;
+                        MessageBox.Show("Получены неполные данные (TOVAR), загрузка невозможна");
+                        return false;
                     }
-                    //else
-                    //{
-                    //    MessageBox.Show("Данные получены");
-                    //}
-
-                    tovar = decrypt_data.Substring(start_pos + 5, finish_pos);
-
-                    start_pos = decrypt_data.IndexOf("BARCODE");
-                    finish_pos = decrypt_data.Substring(start_pos + 7, decrypt_data.Length - start_pos - 7).IndexOf("BARCODE");
-                    if (finish_pos == 0)
+                    string barcodeSection = ExtractSection(decrypt_data, "BARCODE", 1);
+                    if (string.IsNullOrEmpty(barcodeSection))
                     {
-                        MessageBox.Show("Получены неполные данные, загрука невозможна");
-                        result = false;
-                        return result;
+                        MessageBox.Show("Получены неполные данные (BARCODE), загрузка невозможна");
+                        return false;
                     }
-                    string barcode = decrypt_data.Substring(start_pos + 7, finish_pos - 1);
-                    string characteristic = "";
+                    string characteristicSection = ExtractSection(decrypt_data, "CHARACTERISTIC", 1); // может отсутствовать — не ошибка
 
-                    start_pos = decrypt_data.IndexOf("CHARACTERISTIC");
-                    finish_pos = decrypt_data.Substring(start_pos + 14, decrypt_data.Length - start_pos - 14).IndexOf("CHARACTERISTIC");
-                    if ((finish_pos != 0) && (finish_pos != -1))
-                    {
-                        characteristic = decrypt_data.Substring(start_pos + 14, finish_pos - 1);
-                    }
+                    decrypt_data = null;                               // большой пакет — наружу
 
-                    ///первые 3 символа это код магазина сразу обновляем его в константах
-
-                    StringBuilder sb = new StringBuilder();
-                    char[] delimiters = new char[] { '|' };
-                    string[] t = tovar.Split(delimiters);
-                    tovar = "";
-                    //Освобождаем память 
-                    decrypt_data = "";
-                    //conn = TSD.Program.ConnectForDataBase();
+                    // ---- 3. Вставка: одна транзакция на всё ----
                     conn.Open();
+                    TuneConnectionForLoad(conn);
                     trans = conn.BeginTransaction();
-                    SQLiteCommand command = null;
-                    textBox1.Text = "Удаляем товары";
-                    query = "DELETE FROM TOVAR";
-                    command = new SQLiteCommand(query, conn);
-                    command.Transaction = trans;
-                    command.ExecuteNonQuery();
-                    command.Dispose();
-                    textBox1.Text = "Загружаются товары ";
-                    delimiters = new char[] { '^' };
-                    for (int i = 0; i < t.Length - 1; i++)
-                    {
 
-                        if (i % 1000 == 0)
-                        {
-                            textBox1.Text = "Обрабатывается товар " + i.ToString() + " из " + t.Length.ToString();
-                        }
-                        //query = "INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES(" + t[i] + ")";
-                        string[] param = t[i].Replace("'", "").Split(delimiters);
-                        //textBox1.Text = t[i];
-                        if (i == 0)
-                        {
-                            query = "INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES(@code,@name,@retail_price,@purchase_price,@its_deleted,@nds)";
+                    InsertTovarBatched(conn, trans, tovarSection);
+                    tovarSection = null;
 
-                            //textBox1.Text += "i =  " + i.ToString() + "\r\n";
-                            //textBox1.Text += "all " +  t[i]+ "\r\n";
-                            //textBox1.Text += " code " + param[0] + "\r\n";
-                            //textBox1.Text += "name " + param[1] + "\r\n";
-                            //textBox1.Text += "retail_price " + param[2] + "\r\n";
-                            //textBox1.Text += "purchase_price " + param[3] + "\r\n";
-                            //textBox1.Text += "its_deleted " + param[4] + "\r\n";
-                            //textBox1.Text += "nds " + param[5] + "\r\n";
+                    InsertBarcodesBatched(conn, trans, barcodeSection);
+                    barcodeSection = null;
 
-                            SQLiteParameter _code = new SQLiteParameter("code", SqlDbType.Int);
-                            _code.Value = Convert.ToInt32(param[0]);
-                            SQLiteParameter _name = new SQLiteParameter("name", param[1].Replace("'", ""));
+                    // Характеристики отключены (как в вашем текущем коде). Если нужны — раскомментируйте:
+                    // if (!string.IsNullOrEmpty(characteristicSection))
+                    //     InsertCharacteristics(conn, trans, characteristicSection);
+                    characteristicSection = null;
 
-                            SQLiteParameter _retail_price = new SQLiteParameter("retail_price", Convert.ToDecimal(param[2]));
-
-                            SQLiteParameter _purchase_price = new SQLiteParameter("purchase_price", Convert.ToDecimal(param[3]));
-
-                            SQLiteParameter _its_deleted = new SQLiteParameter("its_deleted", SqlDbType.SmallInt);
-                            _its_deleted.Value = Convert.ToInt16(param[4]);
-                            SQLiteParameter _nds = new SQLiteParameter("nds", Convert.ToInt32(param[5]));
-
-
-                            command = new SQLiteCommand(query, conn);
-                            command.Parameters.Add(_code);
-                            command.Parameters.Add(_name);
-                            command.Parameters.Add(_retail_price);
-                            command.Parameters.Add(_purchase_price);
-                            command.Parameters.Add(_its_deleted);
-                            command.Parameters.Add(_nds);
-                            command.Prepare();
-                            //textBox1.Text = "успех";
-                        }
-                        else
-                        {
-                            //textBox1.Text += "i =  " + i.ToString() + "\r\n";
-                            //textBox1.Text += "all " + t[i] + "\r\n";
-                            //textBox1.Text += " code " + param[0] + "\r\n";
-                            //textBox1.Text += "name " + param[1] + "\r\n";
-                            //textBox1.Text += "retail_price " + param[2] + "\r\n";
-                            //textBox1.Text += "purchase_price " + param[3] + "\r\n";
-                            //textBox1.Text += "its_deleted " + param[4] + "\r\n";
-                            //textBox1.Text += "nds " + param[5] + "\r\n";
-
-                            command.Parameters[0].Value = Convert.ToInt32(param[0]);
-                            command.Parameters[1].Value = param[1].Replace("'", "");
-                            command.Parameters[2].Value = Convert.ToDecimal(param[2]);
-                            command.Parameters[3].Value = Convert.ToDecimal(param[3]);
-                            command.Parameters[4].Value = Convert.ToInt16(param[4]);
-                            command.Parameters[5].Value = Convert.ToInt32(param[5]);
-                            error_query = command.Parameters[0].Value.ToString() + " | " + command.Parameters[1].Value.ToString() + " | " +
-                                command.Parameters[2].Value.ToString() + " | " + command.Parameters[3].Value.ToString() + " | " +
-                                command.Parameters[4].Value.ToString() + " | " + command.Parameters[5].Value.ToString();
-                        }
-                        command.Transaction = trans;
-                        command.ExecuteNonQuery();
-                    }
-                    //trans.Commit();
-                    //command.Dispose();
-                    //conn.Close();
-                    //return true;
-                    //conn = TSD.Program.ConnectForDataBase();
-                    //conn.Open();
-                    //trans = conn.BeginTransaction();
-                    textBox1.Text += " \r\n Товары загрузились \r\n";
-                    //Освобождаем память
-                    t = null;
-                    delimiters = new char[] { '|' };
-                    string[] b = barcode.Split(delimiters);
-
-                    textBox1.Text = " Удаляем штрихкоды \r\n";
-                    query = "DELETE FROM barcodes";
-                    command = new SQLiteCommand(query, conn);
-                    command.Transaction = trans;
-                    command.ExecuteNonQuery();
-                    command.Dispose();
-
-                    textBox1.Text = "Загружаются штрихкоды \r\n";
-
-                    delimiters = new char[] { ',' };
-
-
-                    for (int i = 0; i < b.Length - 1; i++)
-                    {
-                        if (i % 1000 == 0)
-                        {
-                            textBox1.Text = "Загружаются штрихкоды " + i.ToString() + " из " + b.Length.ToString();
-                        }
-                        string[] param = b[i].Split(delimiters);
-                        //SQLiteParameter _tovar_code = new SQLiteParameter("tovar_code", SqlDbType.Int);
-                        //_tovar_code.Value = Convert.ToInt32(param[0]);
-                        //SQLiteParameter _barcode = new SQLiteParameter("barcode", SqlDbType.NVarChar);
-                        //_barcode.Value = param[1].Replace("'", "");
-
-                        if (i == 0)
-                        {
-                            query = "INSERT INTO barcodes(tovar_code,barcode_code) VALUES(@tovar_code,@barcode)";
-                            SQLiteParameter _tovar_code = new SQLiteParameter("tovar_code", Convert.ToInt32(param[0]));
-                            SQLiteParameter _barcode = new SQLiteParameter("barcode", param[1].Replace("'", ""));
-                            command = new SQLiteCommand(query, conn);
-                            command.Parameters.Add(_tovar_code);
-                            command.Parameters.Add(_barcode);
-                            command.Prepare();
-                        }
-                        else
-                        {
-                            command.Parameters[0].Value = Convert.ToInt32(param[0]);
-                            command.Parameters[1].Value = param[1].Replace("'", "");
-                        }
-                        command.Transaction = trans;
-                        error_query = command.Parameters[0].Value.ToString() + " | " + command.Parameters[1].Value.ToString();
-                        command.ExecuteNonQuery();
-                    }
-
-                    textBox1.Text = "Штрихкод загрузился \r\n";
-                    textBox1.Text = "Загружаются характеристики \r\n";
-                    delimiters = new char[] { '|' };
-                    if (characteristic != "")
-                    {
-                        string[] c = characteristic.Split(delimiters);
-                        query = "DELETE FROM characteristic";
-                        command = new SQLiteCommand(query, conn, trans);
-
-                        command.ExecuteNonQuery();
-                        command.Dispose();
-                        for (int i = 0; i < c.Length - 1; i++)
-                        {
-                            if (i % 1000 == 0)
-                            {
-                                textBox1.Text = "Загружаются характеристики " + i.ToString() + " из " + c.Length.ToString();
-                            }
-                            query = "INSERT INTO characteristic(tovar_code, guid, name, retail_price_characteristic) VALUES(" + c[i] + ")";
-                            command = new SQLiteCommand(query, conn, trans);
-                            command.ExecuteNonQuery();
-                            command.Dispose();
-                        }
-                    }
-                    textBox1.Text += "Характеристики обработались \r\n";
-                    //MessageBox.Show("Данные спешно загружены !!!");
                     trans.Commit();
-                    //conn.Close();
-                    command.Dispose();
                     trans.Dispose();
+                    trans = null;
+
+                    AppendToTextBox("ТМЦ загружены");
+                    return true;
                 }
                 catch (SQLiteException ex)
                 {
-                    if (trans != null)
-                    {
-                        trans.Rollback();
-                    }
-                    MessageBox.Show(error_query);
-                    MessageBox.Show(ex.Message);
-                    result = false;
+                    SafeRollback(trans);
+                    MessageBox.Show("SQLite: " + ex.Message);
+                    return false;
                 }
                 catch (Exception ex)
                 {
-                    if (trans != null)
-                    {
-                        trans.Rollback();
-                    }
-                    MessageBox.Show(error_query);
+                    SafeRollback(trans);
                     MessageBox.Show(ex.Message);
-                    result = false;
+                    return false;
                 }
             }
-            //finally
-            //{
-            //    if (conn != null)
-            //    {
-            //        if (conn.State == ConnectionState.Open)
-            //        {
-            //            conn.Close();
-            //        }
-            //    }
-            //}
-
-            return result;
         }
+
+        // ================== ВСТАВКА: ТОВАРЫ ==================
+
+        private void InsertTovarBatched(SQLiteConnection conn, SQLiteTransaction trans, string section)
+        {
+            AppendToTextBox("Удаляем товары");
+            Exec(conn, trans, "DROP INDEX IF EXISTS Ind_tovar");
+            Exec(conn, trans, "DELETE FROM TOVAR");
+
+            AppendToTextBox("Загружаются товары");
+            long t0 = Environment.TickCount;
+            char[] field = new char[] { '^' };
+            string[] rows = section.Split(new char[] { '|' });
+            int total = rows.Length - 1;                    // последний элемент Split — пустой
+            int pos = 0;
+            DateTime lastUi = DateTime.Now;
+
+            StringBuilder sql = new StringBuilder(128 + BATCH_TOVAR * 70);
+            sql.Append("INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES ");
+            for (int r = 0; r < BATCH_TOVAR; r++)
+            {
+                if (r > 0) sql.Append(',');
+                sql.Append("(@c").Append(r).Append(",@n").Append(r).Append(",@r").Append(r)
+                   .Append(",@p").Append(r).Append(",@d").Append(r).Append(",@v").Append(r).Append(')');
+            }
+
+            SQLiteParameter[] pC = new SQLiteParameter[BATCH_TOVAR];
+            SQLiteParameter[] pN = new SQLiteParameter[BATCH_TOVAR];
+            SQLiteParameter[] pR = new SQLiteParameter[BATCH_TOVAR];
+            SQLiteParameter[] pP = new SQLiteParameter[BATCH_TOVAR];
+            SQLiteParameter[] pD = new SQLiteParameter[BATCH_TOVAR];
+            SQLiteParameter[] pV = new SQLiteParameter[BATCH_TOVAR];
+
+            using (SQLiteCommand cmd = new SQLiteCommand(sql.ToString(), conn, trans))
+            {
+                for (int r = 0; r < BATCH_TOVAR; r++)
+                {
+                    pC[r] = new SQLiteParameter("c" + r); cmd.Parameters.Add(pC[r]);
+                    pN[r] = new SQLiteParameter("n" + r); cmd.Parameters.Add(pN[r]);
+                    pR[r] = new SQLiteParameter("r" + r); cmd.Parameters.Add(pR[r]);
+                    pP[r] = new SQLiteParameter("p" + r); cmd.Parameters.Add(pP[r]);
+                    pD[r] = new SQLiteParameter("d" + r); cmd.Parameters.Add(pD[r]);
+                    pV[r] = new SQLiteParameter("v" + r); cmd.Parameters.Add(pV[r]);
+                }
+                cmd.Prepare();
+
+                while (pos + BATCH_TOVAR <= total)         // полные батчи
+                {
+                    for (int r = 0; r < BATCH_TOVAR; r++)
+                    {
+                        string[] param = rows[pos + r].Split(field);
+                        pC[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);   // ← guard, как у штрихкодов
+                        pN[r].Value = (param.Length > 1 ? param[1] : "");
+                        pR[r].Value = (param.Length > 2 ? Convert.ToDecimal(param[2]) : 0m);
+                        pP[r].Value = (param.Length > 3 ? Convert.ToDecimal(param[3]) : 0m);
+                        pD[r].Value = (param.Length > 4 ? Convert.ToInt16(param[4]) : 0);
+                        pV[r].Value = (param.Length > 5 ? Convert.ToInt32(param[5]) : 0);
+                        rows[pos + r] = null;              // прогрессивное освобождение
+                    }
+                    cmd.ExecuteNonQuery();
+                    pos += BATCH_TOVAR;
+
+                    if ((DateTime.Now - lastUi).TotalMilliseconds > 1000)
+                    {
+                        textBox1.Text = "Обрабатывается товар " + pos.ToString() + " из " + total.ToString();
+                        lastUi = DateTime.Now;
+                    }
+                }
+            }
+
+            if (pos < total)                               // хвост: неполный батч
+            {
+                int take = total - pos;
+
+                StringBuilder tail = new StringBuilder(128 + take * 70);
+                tail.Append("INSERT INTO tovar(code,name,retail_price,purchase_price,its_deleted,nds) VALUES ");
+                for (int r = 0; r < take; r++)
+                {
+                    if (r > 0) tail.Append(',');
+                    tail.Append("(@c").Append(r).Append(",@n").Append(r).Append(",@r").Append(r)
+                        .Append(",@p").Append(r).Append(",@d").Append(r).Append(",@v").Append(r).Append(')');
+                }
+
+                using (SQLiteCommand cmdTail = new SQLiteCommand(tail.ToString(), conn, trans))
+                {
+                    SQLiteParameter[] tc = new SQLiteParameter[take];
+                    SQLiteParameter[] tn = new SQLiteParameter[take];
+                    SQLiteParameter[] tr = new SQLiteParameter[take];
+                    SQLiteParameter[] tp = new SQLiteParameter[take];
+                    SQLiteParameter[] td = new SQLiteParameter[take];
+                    SQLiteParameter[] tv = new SQLiteParameter[take];
+                    for (int r = 0; r < take; r++)
+                    {
+                        tc[r] = new SQLiteParameter("c" + r); cmdTail.Parameters.Add(tc[r]);
+                        tn[r] = new SQLiteParameter("n" + r); cmdTail.Parameters.Add(tn[r]);
+                        tr[r] = new SQLiteParameter("r" + r); cmdTail.Parameters.Add(tr[r]);
+                        tp[r] = new SQLiteParameter("p" + r); cmdTail.Parameters.Add(tp[r]);
+                        td[r] = new SQLiteParameter("d" + r); cmdTail.Parameters.Add(td[r]);
+                        tv[r] = new SQLiteParameter("v" + r); cmdTail.Parameters.Add(tv[r]);
+                    }
+                    for (int r = 0; r < take; r++)
+                    {
+                        string[] param = rows[pos + r].Split(field);
+                        tc[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);
+                        tn[r].Value = (param.Length > 1 ? param[1] : "");
+                        tr[r].Value = (param.Length > 2 ? Convert.ToDecimal(param[2]) : 0m);
+                        tp[r].Value = (param.Length > 3 ? Convert.ToDecimal(param[3]) : 0m);
+                        td[r].Value = (param.Length > 4 ? Convert.ToInt16(param[4]) : 0);
+                        tv[r].Value = (param.Length > 5 ? Convert.ToInt32(param[5]) : 0);
+                    }
+                    cmdTail.ExecuteNonQuery();
+                }
+            }
+
+            rows = null;
+
+            // Индекс — bulk'ом ПОСЛЕ вставки (DROP был в начале метода, здесь только CREATE)   ← ИСПРАВЛЕНО
+            Exec(conn, trans, "CREATE INDEX IF NOT EXISTS Ind_tovar ON tovar(code)");
+            AppendToTextBox("Товары (" + total + "): " + (Environment.TickCount - t0) + " мс");  // ← теперь включает и индекс
+            AppendToTextBox("Товары загрузились");                                          // ← одно сообщение, не два
+        }
+
+        // ================== ВСТАВКА: ШТРИХКОДЫ ==================
+
+        private void InsertBarcodesBatched(SQLiteConnection conn, SQLiteTransaction trans, string section)
+        {
+            AppendToTextBox("Удаляем штрихкоды");
+            // Оба индекса — дропнуть до вставки, пересоздать bulk'ом после
+            Exec(conn, trans, "DROP INDEX IF EXISTS Ind_barcodes_barcode_code");
+            Exec(conn, trans, "DROP INDEX IF EXISTS Ind_barcodes_tovar_code");
+            Exec(conn, trans, "DELETE FROM barcodes");
+
+            AppendToTextBox("Загружаются штрихкоды");
+            long t0 = Environment.TickCount;
+            char[] field = new char[] { ',' };
+            string[] rows = section.Split(new char[] { '|' });
+            int total = rows.Length - 1;
+            int pos = 0;
+            DateTime lastUi = DateTime.Now;
+
+            StringBuilder sql = new StringBuilder(64 + BATCH_BARCODE * 22);
+            sql.Append("INSERT INTO barcodes(tovar_code,barcode_code) VALUES ");
+            for (int r = 0; r < BATCH_BARCODE; r++)
+            {
+                if (r > 0) sql.Append(',');
+                sql.Append("(@c").Append(r).Append(",@b").Append(r).Append(')');
+            }
+
+            SQLiteParameter[] pc = new SQLiteParameter[BATCH_BARCODE];
+            SQLiteParameter[] pb = new SQLiteParameter[BATCH_BARCODE];
+
+            using (SQLiteCommand cmd = new SQLiteCommand(sql.ToString(), conn, trans))
+            {
+                for (int r = 0; r < BATCH_BARCODE; r++)
+                {
+                    pc[r] = new SQLiteParameter("c" + r); cmd.Parameters.Add(pc[r]);
+                    pb[r] = new SQLiteParameter("b" + r); cmd.Parameters.Add(pb[r]);
+                }
+                cmd.Prepare();
+
+                while (pos + BATCH_BARCODE <= total)
+                {
+                    for (int r = 0; r < BATCH_BARCODE; r++)
+                    {
+                        string[] param = rows[pos + r].Split(field);
+                        pc[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);
+                        pb[r].Value = (param.Length > 1 ? param[1] : "");
+                        rows[pos + r] = null;
+                    }
+                    cmd.ExecuteNonQuery();
+                    pos += BATCH_BARCODE;
+
+                    if ((DateTime.Now - lastUi).TotalMilliseconds > 1000)
+                    {
+                        textBox1.Text = "Загружаются штрихкоды " + pos.ToString() + " из " + total.ToString();
+                        lastUi = DateTime.Now;
+                    }
+                }
+            }
+
+            if (pos < total)                               // хвост
+            {
+                int take = total - pos;
+
+                StringBuilder tail = new StringBuilder(64 + take * 22);
+                tail.Append("INSERT INTO barcodes(tovar_code,barcode_code) VALUES ");
+                for (int r = 0; r < take; r++)
+                {
+                    if (r > 0) tail.Append(',');
+                    tail.Append("(@c").Append(r).Append(",@b").Append(r).Append(')');
+                }
+
+                using (SQLiteCommand cmdTail = new SQLiteCommand(tail.ToString(), conn, trans))
+                {
+                    SQLiteParameter[] tc = new SQLiteParameter[take];
+                    SQLiteParameter[] tb = new SQLiteParameter[take];
+                    for (int r = 0; r < take; r++)
+                    {
+                        tc[r] = new SQLiteParameter("c" + r); cmdTail.Parameters.Add(tc[r]);
+                        tb[r] = new SQLiteParameter("b" + r); cmdTail.Parameters.Add(tb[r]);
+                    }
+                    for (int r = 0; r < take; r++)
+                    {
+                        string[] param = rows[pos + r].Split(field);
+                        tc[r].Value = (param[0] != "" ? Convert.ToInt32(param[0]) : 0);
+                        tb[r].Value = (param.Length > 1 ? param[1] : "");
+                    }
+                    cmdTail.ExecuteNonQuery();
+                }
+            }
+
+            rows = null;
+            // bulk-проход вместо 500k построчных апдейтов двух B-деревьев
+            Exec(conn, trans, "CREATE INDEX IF NOT EXISTS Ind_barcodes_barcode_code ON barcodes(barcode_code)");
+            Exec(conn, trans, "CREATE INDEX IF NOT EXISTS Ind_barcodes_tovar_code ON barcodes(tovar_code)");
+
+            AppendToTextBox("Штрихкоды (" + total + "): " + (Environment.TickCount - t0) + " мс");
+            AppendToTextBox("Штрихкоды загрузились");      // ← было "Штрихкодs" — опечатка
+        }
+
+        // ================== ВСТАВКА: ХАРАКТЕРИСТИКИ (вызов отключён) ==================
+
+        private void InsertCharacteristics(SQLiteConnection conn, SQLiteTransaction trans, string section)
+        {
+            string[] c = section.Split(new char[] { '|' });
+
+            AppendToTextBox("Загружаются характеристики");
+            Exec(conn, trans, "DELETE FROM characteristic");
+
+            int total = c.Length - 1;
+            for (int i = 0; i < total; i++)
+            {
+                if (i % 1000 == 0)
+                {
+                    textBox1.Text = "Загружаются характеристики " + i.ToString() + " из " + total.ToString();
+                }
+                Exec(conn, trans, "INSERT INTO characteristic(tovar_code, guid, name, retail_price_characteristic) VALUES(" + c[i] + ")");
+            }
+            AppendToTextBox("Характеристики обработались");
+        }
+
+        #endregion
 
         private int check_doc_1_status()
         {
@@ -1437,7 +2115,7 @@ namespace TSD
             try
             {
                 conn.Open();
-                string query = "SELECT guid FROM dh WHERE status > 0";
+                string query = "SELECT guid FROM dh WHERE status > 0 AND status < 4 ";
                 SQLiteCommand command = new SQLiteCommand(query, conn);
                 SQLiteDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -1508,6 +2186,7 @@ namespace TSD
             public string NickShop { get; set; }
             public List<DH> ListDH { get; set; }
             public List<DT> ListDT { get; set; }
+            public List<string> RetiredGuids { get; set; }
 
             void IDisposable.Dispose()
             {
@@ -1818,77 +2497,194 @@ namespace TSD
             }
         }
 
+        //private void DeleteOldDocuments(SQLiteConnection conn, SQLiteTransaction trans, bool shopIsChanged)
+        //{
+        //    string query = shopIsChanged
+        //        ? "DELETE FROM dt WHERE guid NOT IN (SELECT guid FROM dh where status=3)"
+        //        : "DELETE FROM dt WHERE guid IN (SELECT guid FROM dh where status=0) AND guid NOT IN (SELECT guid FROM dh where status=3)";
+
+        //    ExecuteNonQuery(conn, trans, query);
+
+        //    query = shopIsChanged
+        //        ? "DELETE FROM dh WHERE guid NOT IN (SELECT guid FROM dh where status=3)"
+        //        : "DELETE FROM dh where status=0";
+
+        //    ExecuteNonQuery(conn, trans, query);
+        //}
+
+        //private void InsertDocuments(SQLiteConnection conn, SQLiteTransaction trans, Documents documents, int numBase)
+        //{
+        //    foreach (DH dh in documents.ListDH)
+        //    {
+        //        StringBuilder queryBuilder = new StringBuilder();
+        //        queryBuilder.Append("INSERT INTO dh(type, date, guid, info_1s, display_quantity, status, its_new, db_id, allow_surplus) ");
+        //        queryBuilder.Append("VALUES(");
+        //        queryBuilder.Append(dh.type);
+        //        queryBuilder.Append(", '");
+        //        queryBuilder.Append(dh.date_1s);
+        //        queryBuilder.Append("', '");
+        //        queryBuilder.Append(dh.guid_1s);
+        //        queryBuilder.Append("', '");
+        //        queryBuilder.Append(dh.info_1s);
+        //        queryBuilder.Append("', ");
+        //        queryBuilder.Append(Convert.ToInt16(Convert.ToBoolean(dh.display_quantity)));
+        //        queryBuilder.Append(", 0, 0, ");
+        //        queryBuilder.Append(numBase);
+        //        queryBuilder.Append(", ");
+        //        queryBuilder.Append(Convert.ToInt16(Convert.ToBoolean(dh.allow_surplus)));
+        //        queryBuilder.Append(")");
+
+        //        ExecuteNonQuery(conn, trans, queryBuilder.ToString());
+        //    }
+
+        //    int i = 0;
+        //    foreach (DT dt in documents.ListDT)
+        //    {
+        //        if (i % 1000 == 0)
+        //        {
+        //            AppendToTextBox(string.Format("Загружаются строки документов {0} из {1}", i, documents.ListDT.Count));
+        //        }
+
+        //        StringBuilder queryBuilder = new StringBuilder();
+        //        queryBuilder.Append("INSERT INTO dt(guid, tovar_code, quantity, price_buy, price, line_number, characteristic, box, quantity_shop) ");
+        //        queryBuilder.Append("VALUES('");
+        //        queryBuilder.Append(dt.guid_1s);
+        //        queryBuilder.Append("', ");
+        //        queryBuilder.Append(dt.tovar_code);
+        //        queryBuilder.Append(", ");
+        //        queryBuilder.Append(dt.quantity_1s);
+        //        queryBuilder.Append(", ");
+        //        queryBuilder.Append(dt.price_buy);
+        //        queryBuilder.Append(", ");
+        //        queryBuilder.Append(dt.price);
+        //        queryBuilder.Append(", ");
+        //        queryBuilder.Append(dt.line_number);
+        //        queryBuilder.Append(", '");
+        //        queryBuilder.Append(dt.characteristic);
+        //        queryBuilder.Append("', '");
+        //        queryBuilder.Append(dt.box);
+        //        queryBuilder.Append("', 0)");
+
+        //        ExecuteNonQuery(conn, trans, queryBuilder.ToString());
+        //        i++;
+        //    }
+        //}
+
         private void DeleteOldDocuments(SQLiteConnection conn, SQLiteTransaction trans, bool shopIsChanged)
         {
+            // Логика сохранена: shopIsChanged — полная очистка кроме выгруженных (status=3);
+            // иначе — удаление только "новых" (status=0) перед повторной вставкой (дедуп нетронутых).
+            // Добавлен NULL-guard в NOT IN: один NULL-guid в dh молча отключал бы удаление.
             string query = shopIsChanged
-                ? "DELETE FROM dt WHERE guid NOT IN (SELECT guid FROM dh where status=3)"
-                : "DELETE FROM dt WHERE guid IN (SELECT guid FROM dh where status=0) AND guid NOT IN (SELECT guid FROM dh where status=3)";
-
+                ? "DELETE FROM dt WHERE guid NOT IN (SELECT guid FROM dh WHERE status=3 AND guid IS NOT NULL)"
+                : "DELETE FROM dt WHERE guid IN (SELECT guid FROM dh WHERE status=0) " +
+                  " AND guid NOT IN (SELECT guid FROM dh WHERE status=3 AND guid IS NOT NULL)";
             ExecuteNonQuery(conn, trans, query);
 
             query = shopIsChanged
-                ? "DELETE FROM dh WHERE guid NOT IN (SELECT guid FROM dh where status=3)"
-                : "DELETE FROM dh where status=0";
-
+                ? "DELETE FROM dh WHERE guid NOT IN (SELECT guid FROM dh WHERE status=3 AND guid IS NOT NULL)"
+                : "DELETE FROM dh WHERE status=0";
             ExecuteNonQuery(conn, trans, query);
         }
 
         private void InsertDocuments(SQLiteConnection conn, SQLiteTransaction trans, Documents documents, int numBase)
         {
-            foreach (DH dh in documents.ListDH)
+            // GUARD: гуиды, уже существующие в dh. Закрывает сценарий "сервер повторно прислал
+            // документ, который на ТСД уже есть (status 3/4)" — дубль в dh/dt не создаётся.
+            // (HashSet в .NET CF нет, List.Contains при десятках документов достаточно.)
+            List<string> existingGuids = new List<string>();
+            using (SQLiteCommand sel = new SQLiteCommand("SELECT guid FROM dh", conn, trans))
+            using (SQLiteDataReader r = sel.ExecuteReader())
             {
-                StringBuilder queryBuilder = new StringBuilder();
-                queryBuilder.Append("INSERT INTO dh(type, date, guid, info_1s, display_quantity, status, its_new, db_id, allow_surplus) ");
-                queryBuilder.Append("VALUES(");
-                queryBuilder.Append(dh.type);
-                queryBuilder.Append(", '");
-                queryBuilder.Append(dh.date_1s);
-                queryBuilder.Append("', '");
-                queryBuilder.Append(dh.guid_1s);
-                queryBuilder.Append("', '");
-                queryBuilder.Append(dh.info_1s);
-                queryBuilder.Append("', ");
-                queryBuilder.Append(Convert.ToInt16(Convert.ToBoolean(dh.display_quantity)));
-                queryBuilder.Append(", 0, 0, ");
-                queryBuilder.Append(numBase);
-                queryBuilder.Append(", ");
-                queryBuilder.Append(Convert.ToInt16(Convert.ToBoolean(dh.allow_surplus)));
-                queryBuilder.Append(")");
-
-                ExecuteNonQuery(conn, trans, queryBuilder.ToString());
+                while (r.Read()) existingGuids.Add(r["guid"].ToString());
             }
 
-            int i = 0;
-            foreach (DT dt in documents.ListDT)
+            // --- Заголовки: параметры вместо конкатенации (апостроф в info_1s больше не роняет транзакцию) ---
+            using (SQLiteCommand cmd = new SQLiteCommand(
+                "INSERT INTO dh(type, date, guid, info_1s, display_quantity, status, its_new, db_id, allow_surplus) " +
+                "VALUES(@type, @date, @guid, @info_1s, @display_quantity, 0, 0, @db_id, @allow_surplus)", conn, trans))
             {
-                if (i % 1000 == 0)
+                cmd.Parameters.Add(new SQLiteParameter("type", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("date", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("guid", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("info_1s", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("display_quantity", DbType.Int16));
+                cmd.Parameters.Add(new SQLiteParameter("db_id", DbType.Int32));
+                cmd.Parameters.Add(new SQLiteParameter("allow_surplus", DbType.Int16));
+
+                foreach (DH dh in documents.ListDH)
                 {
-                    AppendToTextBox(string.Format("Загружаются строки документов {0} из {1}", i, documents.ListDT.Count));
+                    if (existingGuids.Contains(dh.guid_1s))
+                    {
+                        continue;   // документ уже есть на ТСД — дубль не создаём
+                    }
+                    cmd.Parameters["type"].Value = dh.type;
+                    cmd.Parameters["date"].Value = dh.date_1s;
+                    cmd.Parameters["guid"].Value = dh.guid_1s;
+                    cmd.Parameters["info_1s"].Value = dh.info_1s == null ? "" : dh.info_1s;
+                    cmd.Parameters["display_quantity"].Value = ToBit(dh.display_quantity);
+                    cmd.Parameters["db_id"].Value = numBase;
+                    cmd.Parameters["allow_surplus"].Value = ToBit(dh.allow_surplus);
+                    cmd.ExecuteNonQuery();
                 }
-
-                StringBuilder queryBuilder = new StringBuilder();
-                queryBuilder.Append("INSERT INTO dt(guid, tovar_code, quantity, price_buy, price, line_number, characteristic, box, quantity_shop) ");
-                queryBuilder.Append("VALUES('");
-                queryBuilder.Append(dt.guid_1s);
-                queryBuilder.Append("', ");
-                queryBuilder.Append(dt.tovar_code);
-                queryBuilder.Append(", ");
-                queryBuilder.Append(dt.quantity_1s);
-                queryBuilder.Append(", ");
-                queryBuilder.Append(dt.price_buy);
-                queryBuilder.Append(", ");
-                queryBuilder.Append(dt.price);
-                queryBuilder.Append(", ");
-                queryBuilder.Append(dt.line_number);
-                queryBuilder.Append(", '");
-                queryBuilder.Append(dt.characteristic);
-                queryBuilder.Append("', '");
-                queryBuilder.Append(dt.box);
-                queryBuilder.Append("', 0)");
-
-                ExecuteNonQuery(conn, trans, queryBuilder.ToString());
-                i++;
             }
+
+            // --- Строки: та же команда переиспользуется — на CF это кратно быстрее, чем
+            //     новый SQLiteCommand на каждую из тысяч строк ---
+            using (SQLiteCommand cmd = new SQLiteCommand(
+                "INSERT INTO dt(guid, tovar_code, quantity, price_buy, price, line_number, characteristic, box, quantity_shop) " +
+                "VALUES(@guid, @tovar_code, @quantity, @price_buy, @price, @line_number, @characteristic, @box, 0)", conn, trans))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("guid", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("tovar_code", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("quantity", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("price_buy", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("price", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("line_number", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("characteristic", DbType.String));
+                cmd.Parameters.Add(new SQLiteParameter("box", DbType.String));
+
+                int i = 0;
+                foreach (DT dt in documents.ListDT)
+                {
+                    if (i % 1000 == 0)
+                    {
+                        AppendToTextBox(string.Format("Загружаются строки документов {0} из {1}", i, documents.ListDT.Count));
+                    }
+                    i++;
+
+                    if (existingGuids.Contains(dt.guid_1s))
+                    {
+                        continue;   // строки пропущенного заголовка не должны остаться сиротами
+                    }
+                    cmd.Parameters["guid"].Value = dt.guid_1s;
+                    cmd.Parameters["tovar_code"].Value = SafeNum(dt.tovar_code);
+                    cmd.Parameters["quantity"].Value = SafeNum(dt.quantity_1s);
+                    cmd.Parameters["price_buy"].Value = SafeNum(dt.price_buy);
+                    cmd.Parameters["price"].Value = SafeNum(dt.price);
+                    cmd.Parameters["line_number"].Value = SafeNum(dt.line_number);
+                    cmd.Parameters["characteristic"].Value = dt.characteristic == null ? "" : dt.characteristic;
+                    cmd.Parameters["box"].Value = dt.box == null ? "" : dt.box;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Сервер присылает bit как "True"/"False", но не падём и на "1"/"0"/мусоре —
+        // Convert.ToBoolean кидал бы FormatException и откатывал всю загрузку
+        private static int ToBit(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return 0;
+            value = value.Trim();
+            if (value == "1" || value.ToLower() == "true") return 1;
+            return 0;
+        }
+
+        // Пустое числовое поле в конкатенации давало синтаксическую ошибку INSERT;
+        // параметром "" запишется как текст в числовую колонку — нормализуем к "0"
+        private static string SafeNum(string value)
+        {
+            return string.IsNullOrEmpty(value) ? "0" : value;
         }
 
         private void ExecuteNonQuery(SQLiteConnection conn, SQLiteTransaction trans, string query)
